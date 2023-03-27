@@ -8,7 +8,7 @@ This guides takes inspiration from [Kubernetes The Hard Way](https://github.com/
 This tutorial is intended for platform/infrastructure engineers who plan to support a Flyte environment for production or testing.
 ## Flyte deployment models
 
-![](flyte-deployment-1.png)
+![](./docs/images/flyte-deployment-1.png)
 
 - **Hosted sandbox** is available for free at [sandbox.union.ai](https://sandbox.union.ai) for a maximum of 4 hours. It includes a VS Code environment, Jupyter notebook and UI ready to get a quick feel of the platform.
 - **Sandbox** deploys a local, minimal Flyte backend via a single command. It includes core services, but it doesn’t scale and supports only the necessary extensions to expose the core Flyte functionality.

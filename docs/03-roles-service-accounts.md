@@ -2,7 +2,7 @@
 
 In order to restrict what Flyte components are entitled to do in an AWS environment, this guide leverages the integration between Service Accounts and IAM Roles. In this way, Flyte’s control plane components and data plane Pods (where the actual workflows run) will use Kubernetes service accounts associated with a set of permissions defined in the IAM Role. Any changes in the scope of permissions or policies in the IAM Role, will be inherited by the Kubernetes resources providing centralized control over Authorization:
 
-![](flyte-eks-permissions.png)
+![](./images/flyte-eks-permissions.png)
 
 ## Create IAM Role
 
