@@ -74,19 +74,7 @@ roleRef:
 ```bash
     kubectl apply -f clusterrb.yaml
 ```
-5. Verify the Service Account has been annotated to include the IAM Role ARN:
-```bash
- kubectl describe sa flyte-sa  -n flyte                                                          
-Name:                <my-flyte-sa>
-Namespace:           flyte
-Labels:              app.kubernetes.io/managed-by=eksctl
-Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::<aws-account-id>:role/flyte-system-role
-Image pull secrets:  <none>
-Mountable secrets:   <none>
-Tokens:              <none>
-Events:              <none>
-```
-6. Verify the `insecure:` parameter is set to `true` in your `$HOME/.flyte/config.yaml` file:
+5. Verify the `insecure:` parameter is set to `true` in your `$HOME/.flyte/config.yaml` file to turn off SSL:
 ```yaml
 admin:
   # For GRPC endpoints you might want to use dns:///flyte.myexample.com
@@ -99,6 +87,6 @@ logger:
 ```
 **NOTE**: if you plan to connect to Flyte using its gRPC interface, change `localhost` to the FQDN defined in Lab 5 and change the port to `8089`
 
-7. Start the port-forward session as indicated in the [Getting Started guide](https://docs.flyte.org/en/latest/deployment/deployment/cloud_simple.html#port-forward-flyte-service) and trigger your [first workflow](https://docs.flyte.org/en/latest/deployment/deployment/cloud_simple.html#test-workflow)
+6. Start the port-forward session as indicated in the [Getting Started guide](https://docs.flyte.org/en/latest/deployment/deployment/cloud_simple.html#port-forward-flyte-service) and trigger your [first workflow](https://docs.flyte.org/en/latest/deployment/deployment/cloud_simple.html#test-workflow)
 
 > If you experience issues, review the [Troubleshooting guide](https://docs.flyte.org/en/latest/community/troubleshoot.html) or ask for help in the [#flyte-deployment](https://flyte-org.slack.com/archives/C01P3B761A6) channel
