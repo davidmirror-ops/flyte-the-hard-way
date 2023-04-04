@@ -55,6 +55,6 @@ SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, co
 kubectl delete namespace testdb
 ```
 ---
-Next: [Configure self signed certificates](05-SSL-certificates.md)
+Next: [Deploy with Helm](05-deploy-with-helm.md)
 
 
