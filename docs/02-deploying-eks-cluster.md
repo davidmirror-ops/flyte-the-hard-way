@@ -39,8 +39,8 @@ In this step we'll deploy the Kubernetes worker nodes where the actual workloads
 8. Use `On-demand` **Capacity type** 
 9. Instance type and size can be chosen based on your devops requirements. Keep the default if in doubt
 10. For **Node group scaling configuration** select:
-    - **Desired size**: `10` 
-    - **Minimum size**: `5`
+    - **Desired size**: `5` 
+    - **Minimum size**: `2`
     - **Maximum size**: `5`
 11. Use the default subnets selected which you will choose based on your EKS cluster accessible subnets
 12. Keep **Configure SSH access to nodes** disabled unless needed

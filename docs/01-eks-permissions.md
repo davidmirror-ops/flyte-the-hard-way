@@ -11,7 +11,7 @@ This role will be used by the Kubernetes control plane to handle its internal co
 5. Ensure that the `AmazonEKSClusterPolicy` is selected
 6. Select **Create the role without a permissions boundary**.   
 Setting proper permissions restrictions is advisable, and it should be done in accordance with your organization’s security policies. Check the [EKS Best Practices Guide](https://aws.github.io/aws-eks-best-practices/security/docs/iam/) for further reference.
-Give the role an informative name and hit **Create role**
+7. Give the role an informative name and hit **Create role**
 
 [Learn more about the EKS cluster role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html#create-service-role)
 

@@ -4,12 +4,26 @@ In order to restrict what Flyte components are entitled to do in an AWS environm
 
 ![](./images/flyte-eks-permissions.png)
 
+## Configure an OIDC provider for the EKS cluster
+
+1. Verify that an OIDC issuer was created as part of the EKS deployment process:
+
+```bash
+aws eks describe-cluster --region <region> --name <Name-EKS-Cluster> --query "cluster.identity.oidc.issuer" --output text
+```
+2. Create the OIDC provider that will be associated with the EKS cluster:
+```bash
+eksctl utils associate-iam-oidc-provider --cluster <Name-EKS-Cluster> --approve
+```
+3. From the AWS Management Console, verify that the OIDC provider has been created by going to **IAM** and then **Identity providers**. There should be a new provider entry has with the same <UUID-OIDC> issuer as the cluster’s.
+
 ## Create IAM Role
 
 Create the `flyte-system` IAM role, attach the `AmazonS3FullAccessservice` policy to it and associate the role with a new Kubernetes service account:
 
 ```bash
-eksctl create iamserviceaccount --name <my-flyte-sa> --namespace flyte --cluster <my-eks-cluster> --region <region-code> --role-name flyte-system-role \ --attach-policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --approve
+eksctl create iamserviceaccount --name <my-flyte-sa> --namespace flyte --cluster <my-eks-cluster> --region <region-code> --role-name flyte-system-role \ 
+--attach-policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --approve
 ```
 Where
 - `<my-flyte-sa>` is the name of the service account to be created in the EKS cluster. Pick a descriptive name

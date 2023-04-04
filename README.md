@@ -37,8 +37,7 @@ This tutorial will deploy Flyte single binary to an EKS environment, progressive
     - Lab 2: [Deploying an EKS cluster](./docs/02-deploying-eks-cluster.md)
     - Lab 3: [Configure roles and service accounts](./docs/03-roles-service-accounts.md)
     - Lab 4: [create a relational database](./docs/04-create-database.md)
-    - Lab 5: [SSL certificate](./docs/05-SSL-certificates.md)
-    - Lab 6: [Deploy with Helm](./docs/06-deploy-with-helm.md) 
+    - Lab 5: [Deploy with Helm](./docs/05-deploy-with-helm.md) 
 - Part II: Scalable networking with Ingress (coming soon)
 - Part III: Securing the stack with certificates and authentication (coming soon)
 
