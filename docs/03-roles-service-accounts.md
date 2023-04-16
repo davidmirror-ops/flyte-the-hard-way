@@ -19,17 +19,12 @@ eksctl utils associate-iam-oidc-provider --cluster <Name-EKS-Cluster> --approve
 
 ## Create IAM Role
 
-Create the `flyte-system` IAM role, attach the `AmazonS3FullAccessservice` policy to it and associate the role with a new Kubernetes service account:
+Create the `flyte-system-role` IAM role, attach the `AmazonS3FullAccessservice` policy to it and associate the role with a new Kubernetes service account named `flyte-backend-flyte-binary`:
 
 ```bash
-eksctl create iamserviceaccount --name <my-flyte-sa> --namespace flyte --cluster <my-eks-cluster> --region <region-code> --role-name flyte-system-role \ 
---attach-policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --approve
+eksctl create iamserviceaccount --name flyte-backend-flyte-binary --namespace flyte --cluster <my-eks-cluster> --region <region-code> --role-name flyte-system-role --attach-policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --approve
 ```
-Where
-- `<my-flyte-sa>` is the name of the service account to be created in the EKS cluster. Pick a descriptive name
-- `<my-eks-cluster>` is the name of the EKS cluster you created in Section 2
-- `flyte-system-role` is the recommended name for the IAM role to be created
- 
+
 
 2. Verify that the trust relationship between the IAM role and the OIDC provider has been created correctly:
 ```bash
@@ -48,7 +43,7 @@ Example output:
             "Action": "sts:AssumeRoleWithWebIdentity",
             "Condition": {
                 "StringEquals": {
-                    "oidc.eks.us-east-1.amazonaws.com/id/<UUID-OIDC>:sub": "system:serviceaccount:flyte:<my-flyte-sa>",
+                    "oidc.eks.us-east-1.amazonaws.com/id/<UUID-OIDC>:sub": "system:serviceaccount:flyte:flyte-backend-flyte-binary",
                     "oidc.eks.<region-code>.amazonaws.com/id/<UUID-OIDC>:aud": "sts.amazonaws.com"
                 }
             }
@@ -59,10 +54,9 @@ Example output:
 
 5. Verify the Service Account has been annotated to include the IAM Role ARN:
 ```bash
-$ kubectl describe sa <my-flyte-sa>  -n 
-flyte       
+$ kubectl describe sa flyte-backend-flyte-binary  -n flyte       
 
-Name:                <my-flyte-sa>
+Name:                flyte-backend-flyte-binary
 Namespace:           flyte
 Labels:              app.kubernetes.io/managed-by=eksctl
 Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::<aws-account-id>:role/flyte-system-role
