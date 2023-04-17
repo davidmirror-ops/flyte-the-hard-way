@@ -42,7 +42,7 @@ configuration:
         max_size_mbs: 100
         target_gc_percent: 100
 serviceAccount:
-  create: false #disable serviceAccount creation as it was already created in Lab #3
+  create: enable
   annotations:
   eks.amazonaws.com/role-arn: "arn:aws:iam::<aws-account-id>:role/flyte-system-role"
 ```
@@ -70,7 +70,34 @@ k get pods -n flyte
 NAME                   READY       STATUS    RESTARTS             AGE
 flyte-backend-flyte-binary-... 0/1  Running  0  8s
 ```
-8. Verify the `insecure:` parameter is set to `true` in your `$HOME/.flyte/config.yaml` file to turn off SSL:
+
+8. Annotate the Kubernetes service account to include the IAM role:
+
+```bash
+kubectl annotate sa flyte-backend-flyte-binary -n flyte eks.amazonaws.com/role-arn\=arn:aws:iam::<account-id>:role/flyte-system-role
+
+```
+9. Verify the annotation is set:
+```bash
+kubectl describe sa flyte-backend-flyte-binary  -n flyte
+
+Name:                flyte-backend-flyte-binary
+Namespace:           flyte
+Labels:              app.kubernetes.io/instance=flyte-backend
+                     app.kubernetes.io/managed-by=Helm
+                     app.kubernetes.io/name=flyte-binary
+                     app.kubernetes.io/version=1.16.0
+                     helm.sh/chart=flyte-binary-v1.3.0
+Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::<account-id>:role/flyte-system-role
+                     meta.helm.sh/release-name: flyte-backend
+                     meta.helm.sh/release-namespace: flyte
+Image pull secrets:  <none>
+Mountable secrets:   <none>
+Tokens:              <none>
+Events:              <none>
+```
+
+10. Verify the `insecure:` parameter is set to `true` in your `$HOME/.flyte/config.yaml` file to turn off SSL:
 ```yaml
 admin:
   # For GRPC endpoints you might want to use dns:///flyte.myexample.com
@@ -83,13 +110,13 @@ logger:
 ```
 **NOTE**: if you plan to connect to Flyte using its gRPC interface, change the port to `8089`
 
-9. Start the port-forward session:
+11. Start the port-forward session:
 
 ```bash
 kubectl -n flyte port-forward service/flyte-backend-flyte-binary 8088:8088 8089:8089
 ```
 
-10. Run your [first workflow](https://docs.flyte.org/en/latest/deployment/deployment/cloud_simple.html#test-workflow)
+12. Run your [first workflow](https://docs.flyte.org/en/latest/deployment/deployment/cloud_simple.html#test-workflow)
 ____
 
 ## Uninstalling Flyte

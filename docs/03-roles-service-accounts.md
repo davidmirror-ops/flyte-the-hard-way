@@ -18,20 +18,19 @@ eksctl utils associate-iam-oidc-provider --cluster <Name-EKS-Cluster> --approve
 3. From the AWS Management Console, verify that the OIDC provider has been created by going to **IAM** and then **Identity providers**. There should be a new provider entry has with the same <UUID-OIDC> issuer as the cluster’s.
 
 ## Create IAM Role
-
-Create the `flyte-system-role` IAM role, attach the `AmazonS3FullAccessservice` policy to it and associate the role with a new Kubernetes service account named `flyte-backend-flyte-binary`:
+1. Create the `flyte-system-role` IAM role without creating a service account; it will be created by running the Helm chart at the end of the process:
 
 ```bash
-eksctl create iamserviceaccount --name flyte-backend-flyte-binary --namespace flyte --cluster <my-eks-cluster> --region <region-code> --role-name flyte-system-role --attach-policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --approve
+eksctl create iamserviceaccount --cluster=fthw-eks-cluster --name=flyte-backend-flyte-binary --role-only --role-name=flyte-system-role --attach-policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --approve
 ```
 
-
 2. Verify that the trust relationship between the IAM role and the OIDC provider has been created correctly:
+
 ```bash
 aws iam get-role --role-name flyte-system-role --query Role.AssumeRolePolicyDocument
 ```
 Example output:
-```json
+```yaml
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -50,20 +49,6 @@ Example output:
         }
     ]
 }
-```
-
-5. Verify the Service Account has been annotated to include the IAM Role ARN:
-```bash
-$ kubectl describe sa flyte-backend-flyte-binary  -n flyte       
-
-Name:                flyte-backend-flyte-binary
-Namespace:           flyte
-Labels:              app.kubernetes.io/managed-by=eksctl
-Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::<aws-account-id>:role/flyte-system-role
-Image pull secrets:  <none>
-Mountable secrets:   <none>
-Tokens:              <none>
-Events:              <none>
 ```
 ---
 Next: [Create a relational database](04-create-database.md)
