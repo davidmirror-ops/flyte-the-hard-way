@@ -19,9 +19,9 @@ ____
 - Access to the AWS console
 
 2. If you haven't done it previously, complete the awscli [quick configuration](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-config)
-3. Go to the AWS Management console > **Virtual Private Cloud** > **Subnets** and take note of all the Subnet IDs available in the supported Availability Zones on the VPC you plan to use to deploy Flyte:
+3. Go to the AWS Management console > **Virtual Private Cloud** > **Subnets** and take note of both the Public and Private subnet IDs available in the supported Availability Zones on the VPC you plan to use to deploy Flyte:
 
-![](./images/subnets.png)
+![](./images/subnets-V2.png)
 
 4. Go to the terminal and submit the command to create the EKS control plane, following these recommendations:
 - Pick a Kubernetes version >= 1.19
@@ -29,7 +29,7 @@ ____
 
 
 ```bash
-eksctl create cluster --name my-cluster --region region-code  --version 1.25 --vpc-private-subnets subnet-ID1,subnet-ID2 --without-nodegroup
+eksctl create cluster --name my-cluster --region region-code  --version 1.25 --vpc-private-subnets private-subnet-ID1,private-subnet-ID2 --vpc-public-subnets public-subnetID1,public-subnetID2 --without-nodegroup
 ```
 
 After some time (minutes) the deployment should finish with an output similar to:
