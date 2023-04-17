@@ -5,10 +5,12 @@
 
 In this tutorial we make use of the following configuration:
 
-- API server endpoint access: `Public` (eksctl default)
+- API server endpoint access: `Public` and `Private`
 - Node group using public subnets
 - VPC already configured with both Public and Private subnets
 - Public subnets enabled to Auto-assign public IPV4 address
+
+[Learn more about EKS networking](https://aws.amazon.com/blogs/containers/de-mystifying-cluster-networking-for-amazon-eks-worker-nodes/)
 ____
 1. Make sure that your system has the following components installed:
 - [kubectl](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html)
@@ -21,7 +23,7 @@ ____
 2. If you haven't done it previously, complete the awscli [quick configuration](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-config)
 3. Go to the AWS Management console > **Virtual Private Cloud** > **Subnets** and take note of both the Public and Private subnet IDs available in the supported Availability Zones on the VPC you plan to use to deploy Flyte:
 
-![](./images/subnets-V2.png)
+![](./images/subnets-v2.png)
 
 4. Go to the terminal and submit the command to create the EKS control plane, following these recommendations:
 - Pick a Kubernetes version >= 1.19
@@ -37,6 +39,10 @@ After some time (minutes) the deployment should finish with an output similar to
 ```bash
 EKS cluster "my-cluster" in "region-code" region is ready
 ```
+5. From the **AWS Management Console** go to **EKS**
+6. Click on your cluster name and select the **Networking** tab
+7. Click on **Manage networking**
+8. Select **Public and private** as the **Cluster endpoint access** mode and **Save changes**
 ## Create an EKS node group
 In this step we'll deploy the Kubernetes worker nodes where the actual workloads will run.
 
