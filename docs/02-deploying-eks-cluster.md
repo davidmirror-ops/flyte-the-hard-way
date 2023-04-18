@@ -1,6 +1,6 @@
 # Deploying an EKS cluster
 
-> Before proceeding, it's recommended to check what are your organization's preferred networking and security settings for EKS clusters. Flyte doesn't require anything beyond to what the Kubernetes nodes require to operate:
+> Before proceeding, it's recommended to check your organization's preferred networking and security settings for EKS clusters. Flyte doesn't require anything beyond what the Kubernetes nodes require to operate::
 > - Connection to the EKS control plane (also called `API Server`)
 
 In this tutorial we make use of the following configuration:
@@ -34,7 +34,7 @@ ____
 eksctl create cluster --name my-cluster --region region-code  --version 1.25 --vpc-private-subnets private-subnet-ID1,private-subnet-ID2 --vpc-public-subnets public-subnetID1,public-subnetID2 --without-nodegroup
 ```
 
-After some time (minutes) the deployment should finish with an output similar to:
+After a few minutes, the deployment should finish with an output similar to:
 
 ```bash
 EKS cluster "my-cluster" in "region-code" region is ready
