@@ -177,7 +177,7 @@ clusterResourceTemplates:
 ingress:
   create: true
   commonAnnotations:
-    alb.ingress.kubernetes.io/certificate-arn: 'arn:aws:acm:us-east-1:590375264460:certificate/e9618c54-0fd2-49ae-8c6a-279c47399070'
+    alb.ingress.kubernetes.io/certificate-arn: 'arn:aws:acm:<AWS-REGION>:<AWS-ACCOUNT-ID>:certificate/<CERTIFICATE-ID>'
     alb.ingress.kubernetes.io/group.name: flyte
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/scheme: internet-facing
