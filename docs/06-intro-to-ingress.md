@@ -15,7 +15,7 @@ The next piece in the Kubernetes hierarchy is the [Service](https://kubernetes.i
 
 ## Enter, the Ingress
 
-![](./images/fthw-ingress.png)
+![](./images/fthw-ingress.png)   
 *A reference diagram for an Ingress setup where the declarative config is defined by the Ingress resource and fulfilled by the controller*
 
 A single Kubernetes Ingress resource will provide application-level routing for one or multiple backend Services, making it more efficient, scalable and robust than standalone Services.
