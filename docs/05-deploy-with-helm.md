@@ -131,3 +131,6 @@ kubectl delete ns flyte
 ```
 _____
 > If you experience issues, review the [Troubleshooting guide](https://docs.flyte.org/en/latest/community/troubleshoot.html) or ask help in the [#flyte-deployment](https://flyte-org.slack.com/archives/C01P3B761A6) channel
+
+___
+Next: [productionize your deployment with Ingress and SSL](06-intro-to-ingress.md)

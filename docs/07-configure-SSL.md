@@ -58,4 +58,4 @@ If you're using the CA from ACM, [learn here](https://docs.aws.amazon.com/acm/la
 
 In any case, note the generated ARN; it will be used in the custom values file for the Helm chart.
 ___
-Next: Adjust values and upgrade with Helm
+Next: [Adjust values and upgrade with Helm](08-adjust-values-upgrade-Helm.md)

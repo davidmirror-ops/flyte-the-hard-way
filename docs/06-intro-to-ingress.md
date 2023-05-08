@@ -185,4 +185,4 @@ NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
 aws-load-balancer-controller   2/2     2            2           52s
 ```
 ____
-Next: Configure SSL
+Next: [Configure SSL](07-configure-SSL.md)

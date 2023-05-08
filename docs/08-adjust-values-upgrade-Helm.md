@@ -244,4 +244,4 @@ NAME                                          READY   STATUS    RESTARTS   AGE
 flyte-backend-flyte-binary-56d5cc7957-79bjs   1/1     Running   0          3m10s
 ```
 ___
-Next: connecting to Flyte throug Ingress
+Next: [connect to Flyte throug Ingress](09-connect-Flyte-ingress.md)
