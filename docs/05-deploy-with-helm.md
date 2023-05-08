@@ -44,12 +44,12 @@ configuration:
 serviceAccount:
   create: enable
   annotations:
-  eks.amazonaws.com/role-arn: "arn:aws:iam::<aws-account-id>:role/flyte-system-role"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::<aws-account-id>:role/flyte-system-role"
 ```
 
 5. Install the Helm chart:
 ```bash
-helm install flyte-backend flyteorg/flyte-binary --namespace flyte --values eks-starter.yaml
+helm install flyte-backend flyteorg/flyte-binary --namespace flyte --values eks-starter.yaml --create-namespace
 ```
 
 6. Example output of the Helm install command:
