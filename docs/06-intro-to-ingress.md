@@ -7,7 +7,7 @@ In this section, we examine a more robust Flyte deployment that makes use of an 
 In [Part I](https://github.com/davidmirror-ops/flyte-the-hard-way/blob/main/docs/05-deploy-with-helm.md), we connected to the Flyte environment using a port-forward session. That’s convenient — but it’s not recommended for production environments for a couple of reasons:
 - It’s temporary: Once your terminal closes, the session is closed
 - It cannot be secured end-to-end by adding certificates or anything similar
-- 
+ 
 The next piece in the Kubernetes hierarchy is the [Service](https://kubernetes.io/docs/concepts/services-networking/service/), which creates an abstraction on top of the particularities of Pod networking. However, Service resources also present some disadvantages, including:
 
 - Service resources only provide basic traffic forwarding
