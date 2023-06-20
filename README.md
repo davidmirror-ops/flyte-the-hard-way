@@ -44,6 +44,7 @@ This tutorial will deploy Flyte single binary to an EKS environment, progressive
 - Lab 8: [Adjust Helm values and upgrade the release](./docs/08-adjust-values-upgrade-Helm.md)
 - Lab 9: [Connect to Flyte through Ingress](./docs/09-connect-Flyte-ingress.md)
 
-## Part III: Securing the stack with authentication (coming soon/open for contributions)
-
+## Part III: Securing the stack with authentication
+- Lab 10: [Prepare your environment for auth using Okta](./docs/10-prepare-for-auth.md)
+- Lab 11: [Upgrade your Helm release to use auth](./docs/11-upgrade-with-auth.md)
 
