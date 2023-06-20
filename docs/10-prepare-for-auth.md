@@ -5,7 +5,7 @@ Further explanations and instructions for other IdPs can be found in the [Flyte 
 
 A heaviliy summarized description of the auth implementation in Flyte and how it operates with an External Authorization Server is presented in the following diagram:
 
-![](./images/flyte-auth-v3.png)
+![](./images/flyte-auth.png)
 ## Glossary
 
 Before heading to the steps, below you'll find brief definitions for some terms we're going to use:
