@@ -5,7 +5,7 @@ Further explanations and instructions for other IdPs can be found in the [Flyte 
 
 A heaviliy summarized description of the auth implementation in Flyte and how it operates with an External Authorization Server is presented in the following diagram:
 
-![](./images/flyte-auth.png)
+![](./images/flyte-auth-v3.png)
 ## Glossary
 
 Before heading to the steps, below you'll find brief definitions for some terms we're going to use:
@@ -84,6 +84,6 @@ In this section you'll create three app integrations, one for each component tha
  44. Set a **Rule Name** and leave all the other options by default unlesss otherwise indicated by your organization's security policies
  45. Click on **Create Rule**
  46. At the top of the page, click on **Back to Authorization Servers**
- 47. Take note of the **Issure URI** for your Authorization Server. It will be used as the `baseURL` parameter in the Helm chart.
+ 47. Take note of the **Issuer URI** for your Authorization Server. It will be used as the `baseURL` parameter in the Helm chart.
  ---
 Next: [upgrade your Helm release to use auth](11-upgrade-with-auth.md)
