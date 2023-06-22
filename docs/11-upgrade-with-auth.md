@@ -18,7 +18,8 @@ You will use the output without the `b''` characters.
 
 ```yaml
   auth:
-    enabled: true
+    #Disable the internal auth server
+    enabled: false  
     oidc:
       # Typically, it looks similar to https://dev-39924781.okta.com/oauth2/aus9xyo1dg41VrOU65d7
       baseUrl: <your auth-server-issuer-URI> 
