@@ -51,7 +51,7 @@ spec:
     targetPort: postgres
   selector: 
     app.kubernetes.io/name: postgres
-    app.kubernetes.io/instance: release-name
+  
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -65,14 +65,10 @@ spec:
   selector:
     matchLabels: 
       app.kubernetes.io/name: postgres
-      app.kubernetes.io/instance: release-name
   template:
     metadata:
       labels: 
-        app.kubernetes.io/name: postgres
-        app.kubernetes.io/instance: release-name
-        helm.sh/chart: flyte-deps-v0.1.10
-        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: postgre
     spec:
       containers:
       - image: "ecr.flyte.org/ubuntu/postgres:13-21.04_beta"
@@ -113,14 +109,10 @@ spec:
   selector:
     matchLabels: 
       app.kubernetes.io/name: minio
-      app.kubernetes.io/instance: release-name
   template:
     metadata:
       labels: 
         app.kubernetes.io/name: minio
-        app.kubernetes.io/instance: release-name
-        helm.sh/chart: flyte-deps-v0.1.10
-        app.kubernetes.io/managed-by: Helm
     spec:
       containers:
       - image: "bitnami/minio:2023.7.18-debian-11-r2"
@@ -175,4 +167,3 @@ spec:
     targetPort: minio-console
   selector: 
     app.kubernetes.io/name: minio
-    app.kubernetes.io/instance: release-name
