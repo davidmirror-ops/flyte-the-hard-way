@@ -68,7 +68,7 @@ spec:
   template:
     metadata:
       labels: 
-        app.kubernetes.io/name: postgre
+        app.kubernetes.io/name: postgres
     spec:
       containers:
       - image: "ecr.flyte.org/ubuntu/postgres:13-21.04_beta"
