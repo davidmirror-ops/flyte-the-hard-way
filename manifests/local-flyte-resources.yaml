@@ -119,8 +119,9 @@ spec:
         imagePullPolicy: "IfNotPresent"
         name: minio
         env:
+          #change the following values if needed. Make sure to apply these changes also to the corresponding fields in the local-values.yaml file
           - name: MINIO_ROOT_USER
-            value: minio
+            value: minio 
           - name: MINIO_ROOT_PASSWORD
             value: miniostorage
           - name: MINIO_DEFAULT_BUCKETS
