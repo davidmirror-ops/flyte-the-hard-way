@@ -50,7 +50,7 @@ In   this tutorial, you'll deploy the `flyte-binary` chart to a Kubernetes envir
 
 ## Part II: Multipler worker nodes and Ingress (coming soon)
 
-## Part III: Auth
+## Part III: Auth (coming soon)
 ---
 ## Flyte deployment models
 
