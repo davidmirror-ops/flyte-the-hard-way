@@ -52,13 +52,13 @@ In   this tutorial, you'll deploy the `flyte-binary` chart to a Kubernetes envir
 
 ## Part III: Auth (coming soon)
 ---
-## Flyte deployment models
+## Flyte deployment options
 
-![](./docs/images/flyte-deployment-1.png)
 
 - **Hosted sandbox** is available for free at [sandbox.union.ai](https://sandbox.union.ai) for a maximum of 4 hours. It includes a VS Code environment, Jupyter notebook and UI ready to get a quick feel of the platform.
 - **Sandbox** deploys a local, minimal Flyte backend via a single command. It includes core services, but it doesn’t scale and supports only the necessary extensions to expose the core Flyte functionality.
 - **Single binary** bundles console, admin, data-catalog and propeller services within a single binary that can be deployed to a production K8s environment or to a local test setup such as minikube. It uses a single Helm chart to reduce startup times and simplify deployment.
 - **Core** is the fully fledged deployment with complete control over the configuration of each Flyte component, including production-grade features like federated authentication and Ingress networking.
+-
  
 
