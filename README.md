@@ -25,8 +25,6 @@ For the purposes of this basic tutorial, I adhered to the following principles:
 - Tag resources in accordance with your DevOps policies
 - Deploy no SSL or Ingress. Follow parts 2 and 3 of this series to add those features 
 
-
-
 ## Part I: Simple deployment without SSL, Ingress or authentication
 - Lab 1: [Configuring permissions on AWS](./docs/01-eks-permissions.md)
 - Lab 2: [Deploying an EKS cluster](./docs/02-deploying-eks-cluster.md)
@@ -42,6 +40,12 @@ For the purposes of this basic tutorial, I adhered to the following principles:
 ## Part III: Securing the stack with authentication
 - Lab 10: [Prepare your environment for auth using Okta](./docs/10-prepare-for-auth.md)
 - Lab 11: [Upgrade your Helm release to use auth](./docs/11-upgrade-with-auth.md)
+
+# Flyte on local Kubernetes 
+## Part I: Simple deployment with no SSL, Ingress or authentication
+- Lab 1: [Deploy a K8s cluster and configure dependencies](docs/on-premises/001-configure-local-k8s.md)
+- Lab 2: [Configure the Helm chart and install Flyte](docs/on-premises/002-install-local-flyte.md)
+
 
 
 ## Flyte deployment models
