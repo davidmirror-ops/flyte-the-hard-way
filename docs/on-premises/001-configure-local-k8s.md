@@ -105,4 +105,4 @@ NAME         STATUS   ROLES                  AGE   VERSION
 k3s-master   Ready    control-plane,master   9d    v1.27.4+k3s1
 ```
 ---
-Next: [configure dependencies and install Flyte](docs/on-premises/002-install-local-flyte.md)
+Next: [configure dependencies and install Flyte](002-install-local-flyte.md)
