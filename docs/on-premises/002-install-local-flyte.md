@@ -2,10 +2,10 @@
 
 Two of the external platform dependencies of Flyte are:
 
-- An S3-compliant object storage used to store task metadata and to retrieve data to be processed by workflows.
+- An S3-compliant object storage used for task metadata and to retrieve data to be processed by workflows.
 - A relational database.
 
-In this tutorial, we'll use Minio with a single bucket for object storage and Postgres as the relational database. These two elements are configured to retain data even if the corresponding Pod is deleted.
+In this tutorial, we'll use Minio with a single bucket as object storage and Postgres as the relational database. These two elements are configured to retain data even if the corresponding Pod is deleted.
 
 1. Create the namespace where the Flyte backend will run.
 
@@ -97,7 +97,7 @@ REVISION: 1
 TEST SUITE: None
 ```
 
-7. Verify the `flyte-binary` Pod in `Running` state:
+7. Verify the `flyte-binary` Pod is in `Running` state:
 ```bash
 kubectl get pods -n flyte
 ```

@@ -2,8 +2,8 @@
 
 Out of the multiple ways to provision a Kubernetes cluster, this tutorial uses K3s for the following reasons:
 
-* Includes the `local-path` CSI provisioner, useful to enable persistency for the stateful dependencies of Flyte (`minio` and `postgres`)
-* Using VMs as nodes, provides a straightforward path to implement an architecture where the same steps can be followed with one or multiple physical machines acting as K8s worker nodes, facilitating networking and volume mounts, as opposed to having an additional container engine layer in the middle.
+* Includes the `local-path` CSI provisioner, useful to configure dynamically-provisioned volumes and enable persistency for the stateful dependencies of Flyte (`minio` and `postgres`)
+* Using VMs as nodes, provides a straightforward path to implement a "multi-machine" architecture with multiple physical machines acting as K8s worker nodes. It facilitates networking and volume mounts, different to having an additional container engine layer in the middle.
 
 ## Pre-requisites
 
@@ -50,17 +50,17 @@ Memory usage:   1.0GiB out of 3.8GiB
 ```bash
 multipass exec k3s-master -- bash -c "sudo cat /etc/rancher/k3s/k3s.yaml"
 ```
-5. If this is the first time you connect to a Kubernetes cluster from your machine ir this is the only cluster you'll get access to, save the file to your machine and use the `KUBECONFIG` environment variable:
+5. If this is the first time you connect to a Kubernetes cluster from your machine or this is the only cluster you'll get access to, save the file to your machine and use the `KUBECONFIG` environment variable:
 
 ```bash
 export KUBECONFIG=<path-to-your-k3s.yaml>
 ```
 Otherwise, use the information from the `k3s.yaml` file and add it to your local `kubeconfig` (typically`$HOME/.kube/config`):
 
-> NOTE: the Kubernetes `config` file follows YAML indentation rules. Make sure to follow them
+> NOTE: the Kubernetes `config` file follows YAML indentation rules.
 
-- On the `clusters` section, add a new entry with the `certificate-authority-data` and `server`
-- Replace the `default` name for `k3s-01` or other descriptive name for the cluster.
+- Add a new entry to the `clusters` section with the `certificate-authority-data` and `server`
+- Replace the `default` name with `k3s-01` or other descriptive name for the cluster.
 
 Example:
 ```yaml

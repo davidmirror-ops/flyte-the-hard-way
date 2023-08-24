@@ -42,12 +42,16 @@ For the purposes of this basic tutorial, I adhered to the following principles:
 - Lab 11: [Upgrade your Helm release to use auth](./docs/11-upgrade-with-auth.md)
 
 # Flyte on local Kubernetes 
-## Part I: Simple deployment with no SSL, Ingress or authentication
+
+In   this tutorial, you'll deploy the `flyte-binary` chart to a Kubernetes environment running on-premises.
+## Part I: Simple deployment with no Ingress or auth
 - Lab 1: [Deploy a K8s cluster and configure dependencies](docs/on-premises/001-configure-local-k8s.md)
 - Lab 2: [Configure the Helm chart and install Flyte](docs/on-premises/002-install-local-flyte.md)
 
+## Part II: Multipler worker nodes and Ingress (coming soon)
 
-
+## Part III: Auth
+---
 ## Flyte deployment models
 
 ![](./docs/images/flyte-deployment-1.png)
