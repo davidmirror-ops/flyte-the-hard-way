@@ -7,18 +7,22 @@ Two of the external platform dependencies of Flyte are:
 
 In this tutorial, we'll use Minio with a single bucket as object storage and Postgres as the relational database. These two elements are configured to retain data even if the corresponding Pod is deleted.
 
-1. Create the namespace where the Flyte backend will run.
+1. Download the manifest that will provision the Flyte dependencies:
+
+```bash
+curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/manifests/local-flyte-resources.yaml > local-flyte-resources.yaml
+```
+2. Create the namespace where the Flyte backend will run.
 
 ```bash
 kubectl create ns flyte
 ```
-> NOTE: in this tutorial we use `flyte` as the namespace. If you need to use a different name, make sure to edit the [YAML manifest](manifests/local-flyte-resources.yaml) accordingly
+> NOTE: in this tutorial we use `flyte` as the namespace. If you need to use a different name, make sure to edit the mainfest accordingly
 
-2. Review the manifest located [here](manifests/local-flyte-resources.yaml) and change the default values if needed.
 
 3. Submit the manifest:
 ```bash
-kubectl create -f https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/manifests/local-flyte-resources.yaml
+kubectl create -f local-flyte-resources.yaml
 ```
 Example output:
 ```bash
