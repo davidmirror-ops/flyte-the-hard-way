@@ -86,7 +86,12 @@ Data
 202-database-secrets.yaml:  48 bytes
 ```
 
-6. Install Flyte using the values file provided [here](docs/on-premises/local-values.yaml):
+6. Download the values file:
+```bash
+curl -sL https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/local-values.yaml > local-values.yaml
+
+``` 
+7. Install Flyte: 
 ```bash
 helm install flyte-binary flyteorg/flyte-binary  --values local-values.yaml -n flyte
 ```
@@ -101,7 +106,7 @@ REVISION: 1
 TEST SUITE: None
 ```
 
-7. Verify the `flyte-binary` Pod is in `Running` state:
+8. Verify the `flyte-binary` Pod is in `Running` state:
 ```bash
 kubectl get pods -n flyte
 ```
@@ -112,7 +117,7 @@ postgres-6f6bb8bff7-9sjnj       1/1     Running   0          30m
 minio-7d795cd5d8-dlk54          1/1     Running   0          30m
 flyte-binary-58d779b9d8-z2hzs   1/1     Running   0          23s
 ```
-8. Configure your Flyte config file for local connections (typically located at `$HOME/.flyte/config.yaml`):
+9. Configure your Flyte config file for local connections (typically located at `$HOME/.flyte/config.yaml`):
 ```yaml
 admin:
   # For GRPC endpoints you might want to use dns:///flyte.myexample.com
@@ -123,7 +128,7 @@ logger:
   show-source: true
   level: 6
 ```
-9. Create a local DNS entry so the Flyte CLI connects to the `minio` service using its FQDN:
+10. Create a local DNS entry so the Flyte CLI connects to the `minio` service using its FQDN:
 
 - In an OSX environment:
 ```bash
@@ -142,7 +147,7 @@ sudo vi /etc/hosts
 255.255.255.255 broadcasthost
 #::1             localhost
 ```
-10. In three different terminal windows, start three port-forwarding sessions:
+11. In three different terminal windows, start three port-forwarding sessions:
 
 
 ```bash
@@ -154,7 +159,7 @@ kubectl -n flyte port-forward service/flyte-binary-grpc 8089:8089
 ```bash
 kubectl -n flyte port-forward service/flyte-binary-http 8088:8088
 ```
-11. Save the following "hello world" workflow definition:
+12. Save the following "hello world" workflow definition:
 
 ```bash
 cat <<<EOF >hello_world.py
@@ -170,7 +175,7 @@ if __name__ == "__main__":
     print(f"Running my_wf() {my_wf()}")
 EOF
 ```
-12. Execute the workflow on the Flyte cluster:
+13. Execute the workflow on the Flyte cluster:
 ```bash
 pyflyte run --remote hello_world.py my_wf
 ```
@@ -179,7 +184,7 @@ Example output:
 Go to http://localhost:8089/console/projects/flytesnacks/domains/development/executions/f0c602e28c5c84d46b22 to see execution in the console.
 ```
 > NOTE: different to what the CLI output indicates, use the `8088` port instead of 8089 to connect to the UI
-13. Go to the Flyte console and monitor the execution:
+14. Go to the Flyte console and monitor the execution:
 ![](/docs/images/local-flyte-ui.png)
 
 ---
