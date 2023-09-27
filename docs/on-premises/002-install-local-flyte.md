@@ -20,7 +20,7 @@ kubectl create ns flyte
 > NOTE: in this tutorial we use `flyte` as the namespace. If you need to use a different name, make sure to edit the mainfest accordingly
 
 
-3. Submit the manifest:
+3. Modify the `POSTGRES_PASSWORD` value in the local-flyte-resources.yaml file and then submit the manifest:
 ```bash
 kubectl create -f local-flyte-resources.yaml
 ```
