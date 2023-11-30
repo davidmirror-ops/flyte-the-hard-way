@@ -31,6 +31,24 @@ configuration:
         region: "<aws-region-code>"
         authType: "iam"
   inline:
+    cluster_resources:
+      customData:
+      - production:
+        - defaultIamRole:
+            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
+      - staging:
+        - defaultIamRole:
+            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
+      - development:
+        - defaultIamRole:
+            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
+    task_resources:
+      defaults:
+        cpu: 500m
+        memory: 500Mi
+        storage: 500Mi
+      limits:
+        memory: 2Gi
     plugins:
       k8s:
         inject-finalizer: true
@@ -41,6 +59,21 @@ configuration:
       cache:
         max_size_mbs: 100
         target_gc_percent: 100
+clusterResourceTemplates:
+  inline:
+    001_namespace.yaml: |
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: '{{ namespace }}'
+    002_serviceaccount.yaml: |
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: default
+        namespace: '{{ namespace }}'
+        annotations:
+          eks.amazonaws.com/role-arn: '{{ defaultIamRole }}'
 serviceAccount:
   create: enable
   annotations:
@@ -68,16 +101,10 @@ $ kubectl get pods -n flyte
 k get pods -n flyte
 
 NAME                   READY       STATUS    RESTARTS             AGE
-flyte-backend-flyte-binary-... 0/1  Running  0  8s
+flyte-backend-flyte-binary-... 1/1  Running  0  8s
 ```
 
-8. Annotate the Kubernetes service account to include the IAM role:
-
-```bash
-kubectl annotate sa flyte-backend-flyte-binary -n flyte eks.amazonaws.com/role-arn\=arn:aws:iam::<account-id>:role/flyte-system-role
-
-```
-9. Verify the annotation is set:
+8. Verify the IAM annotation is set in the Service Account:
 ```bash
 kubectl describe sa flyte-backend-flyte-binary  -n flyte
 
@@ -101,14 +128,14 @@ Events:              <none>
 ```yaml
 admin:
   # For GRPC endpoints you might want to use dns:///flyte.myexample.com
-  endpoint: dns:///localhost:8088
+  endpoint: dns:///localhost:8089
   authType: Pkce
   insecure: true
 logger:
   show-source: true
   level: 0
 ```
-**NOTE**: if you plan to connect to Flyte using its gRPC interface, change the port to `8089`
+>NOTE: this configuration is used for the `flytectl/pyflyte` tools. The console (UI) connection is not controlled by the settings on this file.
 
 11. Start the port-forward session:
 

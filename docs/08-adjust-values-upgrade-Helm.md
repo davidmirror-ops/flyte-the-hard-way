@@ -74,24 +74,7 @@ configuration:
       s3:
         region: "<aws-region>"
         authType: "iam"
-  logging:
-    level: 5
-    plugins:
-      cloudwatch:
-        enabled: false
-        templateUri: |-
-          https://console.aws.amazon.com/cloudwatch/home?region=<AWS_REGION>#logEventViewer:group=/eks/opta-development/cluster;stream=var.log.containers.{{ .podName }}_{{ .namespace }}_{{ .containerName }}-{{ .containerId }}.log
-  auth:
-    enabled: false
-    oidc:
-      baseUrl: https://signin.hosted.unionai.cloud/oauth2/default
-      clientId: <IDP_CLIENT_ID>
-      clientSecret: <IDP_CLIENT_SECRET>
-    internal:
-      clientSecret: <CC_PASSWD>
-      clientSecretHash: <HASHED_CC_PASSWD>
-    authorizedUris:
-    - https://flyte.company.com
+  
   inline:
     task_resources:
       defaults:
@@ -104,13 +87,13 @@ configuration:
       customData:
       - production:
         - defaultIamRole:
-            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-system-role
+            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
       - staging:
         - defaultIamRole:
-            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-system-role
+            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
       - development:
         - defaultIamRole:
-            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-system-role
+            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
     plugins:
       k8s:
         inject-finalizer: true
@@ -137,43 +120,14 @@ clusterResourceTemplates:
       kind: Namespace
       metadata:
         name: '{{ namespace }}'
-    010_spark_role.yaml: |
-      apiVersion: rbac.authorization.k8s.io/v1
-      kind: Role
-      metadata:
-        name: spark-role
-        namespace: '{{ namespace }}'
-      rules:
-      - apiGroups:
-        - ""
-        resources:
-        - pods
-        - services
-        - configmaps
-        verbs:
-        - '*'
-    011_spark_service_account.yaml: |
+    002_serviceaccount.yaml: |
       apiVersion: v1
       kind: ServiceAccount
       metadata:
-        name: spark
+        name: default
         namespace: '{{ namespace }}'
         annotations:
           eks.amazonaws.com/role-arn: '{{ defaultIamRole }}'
-    012_spark_role_binding.yaml: |
-      apiVersion: rbac.authorization.k8s.io/v1
-      kind: RoleBinding
-      metadata:
-        name: spark-role-binding
-        namespace: '{{ namespace }}'
-      roleRef:
-        apiGroup: rbac.authorization.k8s.io
-        kind: Role
-        name: spark-role
-      subjects:
-      - kind: ServiceAccount
-        name: spark
-        namespace: '{{ namespace }}'
 ingress:
   create: true
   commonAnnotations:
@@ -189,43 +143,6 @@ ingress:
   grpcAnnotations:
     alb.ingress.kubernetes.io/backend-protocol-version: GRPC 
   host: flyte-the-hard-way.uniondemo.run #replace with your domain name
-rbac:
-  extraRules:
-    - apiGroups:
-      - ""
-      resources:
-      - pods
-      - services
-      - configmaps
-      verbs:
-      - "*"
-    - apiGroups:
-      - ""
-      resources:
-      - serviceaccounts
-      verbs:
-      - create
-      - get
-      - list
-      - patch
-      - update
-    - apiGroups:
-      - rbac.authorization.k8s.io
-      resources:
-      - rolebindings
-      - roles
-      verbs:
-      - create
-      - get
-      - list
-      - patch
-      - update
-    - apiGroups:
-      - sparkoperator.k8s.io
-      resources:
-      - sparkapplications
-      verbs:
-      - "*"
 serviceAccount:
   create: true 
   annotations:
