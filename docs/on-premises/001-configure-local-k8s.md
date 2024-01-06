@@ -16,7 +16,7 @@ Out of the multiple ways to provision a Kubernetes cluster, this tutorial uses K
 1. Create a VM:
 
 ```bash
-multipass launch --name k3s-master --mem 4G --disk 40G
+multipass launch --name k3s-master --memory 4G --disk 40G
 
 ```
 NOTE: change the memory and disk resources as needed. These are minimums to run example workflows. See `multipass launch --help` for more options.
@@ -55,7 +55,8 @@ multipass exec k3s-master -- bash -c "sudo cat /etc/rancher/k3s/k3s.yaml"
 > NOTE: the Kubernetes `config` file follows YAML indentation rules.
 
 - a. Add a new entry to the `clusters` section with the `certificate-authority-data` and `server`
-- b.  Replace the `default` name with `k3s-01` or other descriptive name for the cluster.
+- b. Replace the `default` name with `k3s-01` or other descriptive name for the cluster.
+- c. Replace the `server` IP with the IP you get from `multipass info k3s-master`
 
 Example:
 ```yaml
