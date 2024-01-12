@@ -122,6 +122,8 @@ minio-7d795cd5d8-dlk54          1/1     Running   0          30m
 flyte-binary-58d779b9d8-z2hzs   1/1     Running   0          23s
 ```
 10. Configure your Flyte config file for local connections (typically located at `$HOME/.flyte/config.yaml`):
+> If you haven't done so, install `flytectl` so the config file is created. Check out the instructions [here](https://docs.flyte.org/en/latest/flytectl_overview.html#installation)
+
 ```yaml
 admin:
   # For GRPC endpoints you might want to use dns:///flyte.myexample.com
@@ -146,10 +148,6 @@ sudo vi /etc/hosts
 # when the system is booting.  Do not change this entry.
 ##
 127.0.0.1       minio.flyte.svc.cluster.local 
-
-127.0.0.1       localhost
-255.255.255.255 broadcasthost
-#::1             localhost
 ```
 12. In three different terminal windows, start three port-forwarding sessions:
 
@@ -163,6 +161,8 @@ kubectl -n flyte port-forward service/flyte-binary-grpc 8089:8089
 ```bash
 kubectl -n flyte port-forward service/flyte-binary-http 8088:8088
 ```
+
+
 13. Save the following "hello world" workflow definition:
 
 ```bash
