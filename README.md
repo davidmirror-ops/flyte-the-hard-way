@@ -26,31 +26,42 @@ For the purposes of this basic tutorial, I adhered to the following principles:
 - Deploy no SSL or Ingress. Follow parts 2 and 3 of this series to add those features 
 
 ## Part I: Simple deployment without SSL, Ingress or authentication
-- Lab 1: [Configuring permissions on AWS](./docs/01-eks-permissions.md)
-- Lab 2: [Deploying an EKS cluster](./docs/02-deploying-eks-cluster.md)
-- Lab 3: [Configure roles and service accounts](./docs/03-roles-service-accounts.md)
-- Lab 4: [Create a relational database](./docs/04-create-database.md)
-- Lab 5: [Deploy with Helm](./docs/05-deploy-with-helm.md) 
+- Lab 1: [Configuring permissions on AWS](./docs/aws/01-eks-permissions.md)
+- Lab 2: [Deploying an EKS cluster](./docs/aws/02-deploying-eks-cluster.md)
+- Lab 3: [Configure roles and service accounts](./docs/aws/03-roles-service-accounts.md)
+- Lab 4: [Create a relational database](./docs/aws/04-create-database.md)
+- Lab 5: [Deploy with Helm](./docs/aws/05-deploy-with-helm.md) 
 ## Part II: Scalable networking with Ingress
-- Lab 6: [Intro to Ingress and configuring the controller](./docs/06-intro-to-ingress.md)
-- Lab 7: [Configure SSL](./docs/07-configure-SSL.md)
-- Lab 8: [Adjust Helm values and upgrade the release](./docs/08-adjust-values-upgrade-Helm.md)
-- Lab 9: [Connect to Flyte through Ingress](./docs/09-connect-Flyte-ingress.md)
+- Lab 6: [Intro to Ingress and configuring the controller](./docs/aws/06-intro-to-ingress.md)
+- Lab 7: [Configure SSL](./docs/aws/07-configure-SSL.md)
+- Lab 8: [Adjust Helm values and upgrade the release](./docs/aws/08-adjust-values-upgrade-Helm.md)
+- Lab 9: [Connect to Flyte through Ingress](./docs/aws/09-connect-Flyte-ingress.md)
 
 ## Part III: Securing the stack with authentication
-- Lab 10: [Prepare your environment for auth using Okta](./docs/10-prepare-for-auth.md)
-- Lab 11: [Upgrade your Helm release to use auth](./docs/11-upgrade-with-auth.md)
+- Lab 10: [Prepare your environment for auth using Okta](./docs/aws/10-prepare-for-auth.md)
+- Lab 11: [Upgrade your Helm release to use auth](./docs/aws/11-upgrade-with-auth.md)
 
 # Flyte on local Kubernetes 
 
-In   this tutorial, you'll deploy the `flyte-binary` chart to a Kubernetes environment running on-premises.
+In the following tutorials, you'll deploy the `flyte-binary` chart to different Kubernetes distributions running on-premises.
+# k3s
 ## Part I: Simple deployment with no Ingress or auth
-- Lab 1: [Deploy a K8s cluster and configure dependencies](docs/on-premises/001-configure-local-k8s.md)
-- Lab 2: [Configure the Helm chart and install Flyte](docs/on-premises/002-install-local-flyte.md)
+- Lab 1: [Deploy a K8s cluster and configure dependencies](docs/on-premises/k3s/001-configure-local-k8s.md)
+- Lab 2: [Configure the Helm chart and install Flyte](docs/on-premises/k3s/002-install-local-flyte.md)
 
 ## Part II: Multipler worker nodes and Ingress (coming soon)
 
 ## Part III: Auth (coming soon)
+
+# microk8s
+## Part I: Simple deployment with no Ingress or auth
+- Lab 1: [Prepare a Raspberry Pi for microk8s](docs/on-premises/microk8s/01-preparing-raspberry-pi.md)
+- Lab 2: [Install & Configure microk8s](docs/on-premises/microk8s/02-install-configure-microk8s.md)
+- Lab 3: [Install Minio & Postgres](docs/on-premises/microk8s/03-deploy-minio-and-postgres.md)
+- Lab 4: [Install Flyte](docs/on-premises/microk8s/04-install-flyte.md)
+## Part II: Adding Ingress, TLS & submitting workflows
+- Lab 5: [Adding Ingress and TLS](docs/on-premises/microk8s/05-add-ingress-and-tls.md)
+- Lab 6: [Submitting Workflows](docs/on-premises/microk8s/06-submitting-workflows.md)
 ---
 ## Flyte deployment options
 
@@ -59,6 +70,5 @@ In   this tutorial, you'll deploy the `flyte-binary` chart to a Kubernetes envir
 - **Sandbox** deploys a local, minimal Flyte backend via a single command. It includes core services, but it doesn’t scale and supports only the necessary extensions to expose the core Flyte functionality.
 - **Single binary** bundles console, admin, data-catalog and propeller services within a single binary that can be deployed to a production K8s environment or to a local test setup such as minikube. It uses a single Helm chart to reduce startup times and simplify deployment.
 - **Core** is the fully fledged deployment with complete control over the configuration of each Flyte component, including production-grade features like federated authentication and Ingress networking.
--
  
 
