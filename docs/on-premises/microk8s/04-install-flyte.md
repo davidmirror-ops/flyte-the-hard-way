@@ -1,5 +1,5 @@
 # Install Flyte
-To make sure your future Flyte deployment can access kubernetes services via internal dns, make sure to enable the dns addon of microk8s:
+To make sure your future Flyte deployment can access Kubernetes services via internal DNS, make sure to enable the DNS addon of microk8s:
 ``` bash
 microk8s enable dns
 ```
@@ -9,7 +9,7 @@ curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/ma
 ```
 > Make sure to adjust the values for the minio & postgres deployment you just submitted
 
-Install the Flyte binary via helm:
+Install the Flyte binary via Helm:
 ``` bash
 microk8s.helm repo add flyteorg https://flyteorg.github.io/flyte
 microk8s.helm upgrade flyte-binary flyteorg/flyte-binary --values local-values.yaml --install -n flyte
@@ -23,7 +23,7 @@ flyte-binary-7cdc7c66b7-wngw4   1/1     Running   0          17m
 ```
 Using kubernetes port forwarding we can already validate our flyte deployment:
 ```bash
-kubectl -n flyte port-forward service/flyte-binary-http 8088:8088
+kubectl -n flyte port-forward service/flyte-binary-http 8088:8088 --address 0.0.0.0
 ```
 To access the Flyte UI, configure a local DNS entry on your development device in your local network. In an OSX environment, adjust the `/etc/hosts` file:
 
