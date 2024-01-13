@@ -1,13 +1,13 @@
 # Adding Ingress & TLS
 
-This section will demonstrate how to add ingress and tls to your flyte deployment in order to access flyte from any device in your local network.
+This section will demonstrate how to add Ingress and TLS to your flyte deployment in order to access flyte from any device in your local network.
 
-First of all, enable the ingress microk8s addon:
+First of all, enable the Ingress microk8s addon:
 ``` bash
 microk8s enable ingress
 ```
 
-> For simplicity reasons, this tutorial uses self-signed certificates to enable a tls connection.
+> For simplicity reasons, this tutorial uses self-signed certificates to enable a TLS connection.
 Create a self signed certificate for the hostname `flyte.local` like this:
 
 ``` bash
@@ -18,12 +18,12 @@ HOST=flyte.local
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ${KEY_FILE} -out ${CERT_FILE} -subj "/CN=${HOST}/O=${HOST}" -addext "subjectAltName = DNS:${HOST}"
 ```
 
-Given the certificate and key, create a kubernetes secret in the flyte namespace:
+Given the certificate and key, create a Kubernetes secret in the `flyte` namespace:
 ``` bash
 kubectl create secret tls ${CERT_NAME} --key ${KEY_FILE} --cert ${CERT_FILE} -n flyte
 ```
 
-To add ingress and tls to your flyte deployment, add the following yaml to your Flyte binary helm chart and update your deployment:
+To add Ingress and TLS to your Flyte deployment, add the following block to your Flyte binary Helm chart and update your deployment:
 ``` yaml
 ingress:
   create: true
@@ -40,7 +40,7 @@ ingress:
   grpcAnnotations:
     nginx.ingress.kubernetes.io/backend-protocol: GRPC
 ```
-To validate your updated deployment, check the ingress resources in the flyte namespace:
+To validate your updated deployment, check the Ingress resources in the flyte namespace:
 ``` bash
 kubectl get ingress -n flyte
 ```
