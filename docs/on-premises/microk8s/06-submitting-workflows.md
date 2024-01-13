@@ -4,6 +4,22 @@ To submit workflows to your Flyte deployment, only a couple configurations are m
 
 When workflows are getting submitted later on, the Flyte binary service needs to be able to resolve the configured hostname `flyte.local`. The most simple way is to add a static host entry to the configmap of coredns.
 
+Install the jq snap for a convenient update of the coredns configmap:
+```
+sudo snap install jq
+```
+Set the hostname and ip of your Ubuntu-powered device as bash variables:
+```
+HOST=flyte.local
+IP=your-ubuntu-server-local-ip
+```
+Update the coredns configmap:
+```
+kubectl get configmap coredns -n kube-system -o json \
+| jq '.data.Corefile += "\n'"$HOST"':53 {\n    errors\n    hosts {\n      '"$IP"' '"$HOST"'\n    }\n}"' | \
+kubectl patch configmap coredns -n kube-system --type merge -p "$(cat)"
+```
+
 ``` bash
 kubectl describe configmap coredns -n kube-system
 ```
@@ -39,11 +55,18 @@ Corefile:
     loop
     reload
     loadbalance
-    # Add a static hosts entry like this
+}
+flyte.local:53 {
+    errors
     hosts {
-      your-ubuntu-server-local-ip flyte.local
+      192.168.178.68 flyte.local
     }
 }
+
+BinaryData
+====
+
+Events:  <none>
 ```
 > Make sure to restart the coredns deployment after adjusting the configmap.
 
@@ -75,6 +98,11 @@ Example output:
 Go to https://flyte.local/console/projects/flytesnacks/domains/development/executions/f63a3e948256f4fd1b81 to see execution in the console.
 ```
 Follow the link and observe your workflow succeeding!
+> The first run will take some time due to the download of the flytekit docker image
+
 
 **Congratulations!**    
-You have a fully working Flyte instance running on a local Kubernetes environment.
+You have a fully working Flyte instance running on a local Kubernetes environment only using ~0.5 Cpu Cores & ~2GB of RAM running in idle.
+
+![](../../images/microk8s-cpu-usage.png)
+![](../../images/microk8s-memory-usage.png)
