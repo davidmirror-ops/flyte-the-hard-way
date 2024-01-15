@@ -10,7 +10,7 @@ In this tutorial, we'll use Minio with a single bucket as object storage and Pos
 1. Download the manifest that will provision the Flyte dependencies:
 
 ```bash
-curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/manifests/local-flyte-resources.yaml > local-flyte-resources.yaml
+curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/k3s/manifests/local-flyte-resources.yaml > local-flyte-resources.yaml
 ```
 2. Create the namespace where the Flyte backend will run.
 
@@ -88,7 +88,7 @@ Data
 
 6. Download the values file:
 ```bash
-curl -sL https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/local-values.yaml > local-values.yaml
+curl -sL https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/k3s/local-values.yaml > local-values.yaml
 
 ```
 7. Add the Flyte Helm repo:
