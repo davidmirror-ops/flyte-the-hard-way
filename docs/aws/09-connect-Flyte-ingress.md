@@ -50,7 +50,7 @@ Go to https://flyte-the-hard-way.uniondemo.run/console/projects/flytesnacks/doma
 
 11. Paste the URL from the previous output in your browser:
 
-![](./images/fthw-successful-execution.png)
+![](../images/fthw-successful-execution.png)
 
 ## Closing remarks
 

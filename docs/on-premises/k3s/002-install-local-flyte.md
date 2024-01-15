@@ -189,7 +189,7 @@ Go to http://localhost:8089/console/projects/flytesnacks/domains/development/exe
 ```
 > NOTE: different to what the CLI output indicates, use the `8088` port instead of 8089 to connect to the UI
 15. Go to the Flyte console and monitor the execution:
-![](/docs/images/local-flyte-ui.png)
+![](../../images/local-flyte-ui.png)
 
 ---
 **Congratulations!**    

@@ -110,4 +110,4 @@ Go to https://flyte-the-hard-way.uniondemo.run/console/projects/flytesnacks/doma
 
 **Flyte console**:
 
-![](./images/flyte-auth-console.png)
+![](../images/flyte-auth-console.png)
