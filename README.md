@@ -44,17 +44,17 @@ For the purposes of this basic tutorial, I adhered to the following principles:
 # Flyte on local Kubernetes 
 
 In the following tutorials, you'll deploy the `flyte-binary` chart to different Kubernetes distributions running on-premises.
-# k3s
-## Part I: Simple deployment with no Ingress or auth
+## k3s
+### Part I: Simple deployment with no Ingress or auth
 - Lab 1: [Deploy a K8s cluster and configure dependencies](docs/on-premises/k3s/001-configure-local-k8s.md)
 - Lab 2: [Configure the Helm chart and install Flyte](docs/on-premises/k3s/002-install-local-flyte.md)
 
-## Part II: Multipler worker nodes and Ingress (coming soon)
+## Part II: Multiple worker nodes and Ingress (coming soon)
 
 ## Part III: Auth (coming soon)
-
-# microk8s
-## Part I: Simple deployment with no Ingress or auth
+---
+## microk8s on Raspberry Pi
+### Part I: Simple deployment with no Ingress or auth
 - Lab 1: [Prepare a Raspberry Pi for microk8s](docs/on-premises/microk8s/01-preparing-raspberry-pi.md)
 - Lab 2: [Install & Configure microk8s](docs/on-premises/microk8s/02-install-configure-microk8s.md)
 - Lab 3: [Install Minio & Postgres](docs/on-premises/microk8s/03-deploy-minio-and-postgres.md)
