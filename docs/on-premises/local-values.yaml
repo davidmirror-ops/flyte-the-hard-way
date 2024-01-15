@@ -40,3 +40,13 @@ configuration:
 
 serviceAccount:
   create: true
+
+ingress:
+ create: true
+ commonAnnotations:
+  kubernetes.io/ingress.class: nginx
+ httpAnnotations:
+  nginx.ingress.kubernetes.io/app-root: /console
+ grpcAnnotations:
+  nginx.ingress.kubernetes.io/backend-protocol: GRPC
+ host: <your fqdn>
