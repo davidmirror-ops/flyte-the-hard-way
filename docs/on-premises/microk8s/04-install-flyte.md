@@ -5,14 +5,14 @@ microk8s enable dns
 ```
 Download the values file:
 ``` bash
-curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/microk8s/local-values.yaml > local-values.yaml.yaml
+curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/microk8s/edge-values.yaml > edge-values.yaml.yaml
 ```
 > Make sure to adjust the values for the minio & postgres deployment you just submitted
 
 Install the Flyte binary via Helm:
 ``` bash
 microk8s.helm repo add flyteorg https://flyteorg.github.io/flyte
-microk8s.helm upgrade flyte-binary flyteorg/flyte-binary --values local-values.yaml --install -n flyte
+microk8s.helm upgrade flyte-binary flyteorg/flyte-binary --values edge-values.yaml --install -n flyte
 ```
 After waiting for a couple of seconds you should see a flyte-binary pod in the flyte namespace:
 ```bash
