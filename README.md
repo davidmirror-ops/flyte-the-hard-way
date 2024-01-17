@@ -44,7 +44,7 @@ For the purposes of this basic tutorial, I adhered to the following principles:
 # Flyte on local Kubernetes 
 
 In the following tutorials, you'll deploy the `flyte-binary` chart to different Kubernetes distributions running on-premises.
-## Single-node Kubernetes
+## microk8s on VMs or bare-metal
 ### Part I: Single node without Ingress
 - Lab 1: [Deploy an on-prem K8s node](docs/on-premises/single-node/001-configure-single-node-k8s.md)
 - Lab 2: [Configure dependencies and install Flyte](docs/on-premises/single-node/002-single-node-onprem-install.md)
