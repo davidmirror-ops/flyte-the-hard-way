@@ -5,7 +5,7 @@ microk8s enable dns
 ```
 Download the values file:
 ``` bash
-curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/microk8s/edge-values.yaml > edge-values.yaml.yaml
+curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/microk8s/manifests/edge-values.yaml > edge-values.yaml.yaml
 ```
 > Make sure to adjust the values for the minio & postgres deployment you just submitted
 

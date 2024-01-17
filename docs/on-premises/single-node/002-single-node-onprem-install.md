@@ -21,7 +21,7 @@ microk8s enable hostpath-storage
 
 2. Download the manifest that will provision the Flyte dependencies:
 ``` bash
-curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/microk8s/manifests/local-flyte-resources.yaml > local-flyte-resources.yaml
+curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/single-node/manifests/local-flyte-resources.yaml > local-flyte-resources.yaml
 ```
 3. Make sure to adjust sensitive values like `MINIO_ROOT_PASSWORD` and `POSTGRES_PASSWORD` before submitting the manifest:
 ``` bash
@@ -89,7 +89,7 @@ Data
 ```
 6.  Download the values file:
 ```bash
-curl -sL https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/single-node/local-values.yaml > local-values.yaml
+curl -sL https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/single-node/manifests/local-values.yaml > local-values.yaml
 
 7. Add the Flyte Helm repo:
 ```bash
