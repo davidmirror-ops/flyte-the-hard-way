@@ -44,10 +44,10 @@ For the purposes of this basic tutorial, I adhered to the following principles:
 # Flyte on local Kubernetes 
 
 In the following tutorials, you'll deploy the `flyte-binary` chart to different Kubernetes distributions running on-premises.
-## k3s
-### Part I: Simple deployment with no Ingress or auth
-- Lab 1: [Deploy a K8s cluster and configure dependencies](docs/on-premises/k3s/001-configure-local-k8s.md)
-- Lab 2: [Configure the Helm chart and install Flyte](docs/on-premises/k3s/002-install-local-flyte.md)
+## Single-node Kubernetes
+### Part I: Single node without Ingress
+- Lab 1: [Deploy an on-prem K8s node](docs/on-premises/single-node/001-configure-single-node-k8s.md)
+- Lab 2: [Configure dependencies and install Flyte](docs/on-premises/single-node/002-single-node-onprem-install.md)
 
 ## Part II: Multiple worker nodes and Ingress (coming soon)
 
