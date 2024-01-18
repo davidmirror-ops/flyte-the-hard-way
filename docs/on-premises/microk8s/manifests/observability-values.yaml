@@ -1,0 +1,44 @@
+grafana:
+  enabled: true
+  adminPassword: admin
+
+  ingress:
+    enabled: true
+    ingressClassName: public
+    hosts:
+       - grafana.local
+
+    path: /
+    ## TLS configuration for grafana Ingress
+    ## Secret must be manually created in the namespace
+    ##
+    tls: []
+    # - secretName: grafana-general-tls
+    #   hosts:
+    #   - grafana.local
+
+  additionalDataSources:
+  - name: loki
+    access: proxy
+    basicAuth: false
+    basicAuthPassword: pass
+    basicAuthUser: daco
+    editable: false
+    jsonData:
+        tlsSkipVerify: true
+    orgId: 1
+    uid: loki
+    type: loki
+    url: http://loki.observability:3100
+    version: 1
+
+alertmanager:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+nodeExporter:
+  enabled: false
+prometheusOperator:
+  enabled: false
+prometheus:
+  enabled: false
