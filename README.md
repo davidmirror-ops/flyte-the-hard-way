@@ -59,9 +59,11 @@ In the following tutorials, you'll deploy the `flyte-binary` chart to different 
 - Lab 2: [Install & Configure microk8s](docs/on-premises/microk8s/02-install-configure-microk8s.md)
 - Lab 3: [Install Minio & Postgres](docs/on-premises/microk8s/03-deploy-minio-and-postgres.md)
 - Lab 4: [Install Flyte](docs/on-premises/microk8s/04-install-flyte.md)
-## Part II: Adding Ingress, TLS & submitting workflows
+### Part II: Adding Ingress, TLS & submitting workflows
 - Lab 5: [Adding Ingress and TLS](docs/on-premises/microk8s/05-add-ingress-and-tls.md)
 - Lab 6: [Submitting Workflows](docs/on-premises/microk8s/06-submitting-workflows.md)
+### Part III: Adding Flyte Task Logs & Auth
+- Lab 7: [Adding Flyte Task Logs](docs/on-premises/microk8s/07-add-flyte-task-logs.md)
 ---
 ## Flyte deployment options
 
