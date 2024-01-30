@@ -58,7 +58,7 @@ Example output:
     "Policy": {
         "PolicyName": "fthw-test-2",
         "PolicyId": "ANPAYS5I3UDGHFR7TZ4CD",
-        "Arn": "arn:aws:iam::<AWS-ACCOUNT>:policy/fthw-custom-policy",
+        "Arn": "arn:aws:iam::<AWS-ACCOUNT>:policy/<policy-name>",
         "Path": "/",
         "DefaultVersionId": "v1",
         "AttachmentCount": 0,
@@ -76,7 +76,7 @@ Example output:
 1. Create the `flyte-system-role` IAM role that the backend components will use. You won't create a Kubernetes service account at this point; it will be created by running the Helm chart at the end of the process:
 
 ```bash
-eksctl create iamserviceaccount --cluster=fthw-eks-cluster --name=flyte-backend-flyte-binary --role-only --role-name=flyte-system-role --attach-policy-arn arn:aws:iam::<AWS-ACCOUNT>:policy/fthw-custom-policy --approve --region <region-code> --namespace flyte
+eksctl create iamserviceaccount --cluster=<Name-EKS-Cluster> --name=flyte-backend-flyte-binary --role-only --role-name=flyte-system-role --attach-policy-arn arn:aws:iam::<AWS-ACCOUNT>:policy/<policy-name> --approve --region <region-code> --namespace flyte
 ```
 
 2. Verify that the trust relationship between the IAM role and the OIDC provider has been created correctly:
@@ -107,7 +107,7 @@ Example output:
 ```
 3. Create the role that the Task Pods will use to consume AWS resources:
 ```bash
-eksctl create iamserviceaccount --cluster=fthw-eks-cluster --name=default --role-only --role-name=flyte-workers-role --attach-policy-arn arn:aws:iam::<AWS-ACCOUNT>:policy/fthw-custom-policy --approve --region <region-code> --namespace flyte
+eksctl create iamserviceaccount --cluster=<Name-EKS-Cluster> --name=default --role-only --role-name=flyte-workers-role --attach-policy-arn arn:aws:iam::<AWS-ACCOUNT>:policy/<policy-name> --approve --region <region-code> --namespace flyte
 ```
 >NOTE: as this role will be used by the `default` Service Account on each `project-domain` namespace, you'll need to adjust the Role definition to make it work for any namespace:
 
