@@ -122,7 +122,7 @@ minio-7d795cd5d8-dlk54          1/1     Running   0          30m
 flyte-binary-58d779b9d8-z2hzs   1/1     Running   0          23s
 ```
 10. Configure your Flyte config file for local connections (typically located at `$HOME/.flyte/config.yaml`):
-> If you haven't done so, install `flytectl` so the config file is created. Check out the instructions [here](https://docs.flyte.org/en/latest/flytectl_overview.html#installation)
+> If you haven't done so, install `flytectl` so the config file is created. Check out the instructions [here](https://docs.flyte.org/en/latest/flytectl/overview.html#installation)
 
 ```yaml
 admin:
