@@ -1,0 +1,46 @@
+---
+# pre-commit is a tool to perform a predefined set of tasks manually and/or
+# automatically before git commits are made.
+#
+# Config reference: https://pre-commit.com/#pre-commit-configyaml---top-level
+#
+# Common tasks
+#
+# - Run on all files:   pre-commit run --all-files
+# - Register git hooks: pre-commit install --install-hooks
+#
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+# See https://pre-commit.com for more information
+# spell-checker: disable
+# See https://pre-commit.com for more information
+repos:
+  - repo: https://github.com/sirosen/texthooks
+    rev: 0.6.4
+    hooks:
+      - id: fix-spaces
+      - id: alphabetize-codeowners
+      - id: fix-ligatures
+      - id: fix-smartquotes
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: sort-simple-yaml
+      - id: fix-byte-order-marker
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: mixed-line-ending
+      - id: check-executables-have-shebangs
+      - id: check-added-large-files
+        args: ["--maxkb=4096"]
+      - id: check-merge-conflict
+      - id: detect-aws-credentials
+        args:
+          - "--allow-missing-credentials"
+      - id: detect-private-key
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.5
+    hooks:
+      - id: remove-crlf
+      - id: remove-tabs
