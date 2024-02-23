@@ -1,17 +1,20 @@
 # Adding Flyte Task Logs
+
 This section will demonstrate how to enable and display Flyte task logs on a monitoring system hosted on your Ubuntu-powered device. In the manner of this microk8s guide, we will use the microk8s observability addon. The observability addon is a lightweight stack for logs, traces and metrics and includes deployments for Prometheus, Grafana, Loki & Tempo.
 
-For the scope of just displaying logs, we dont need every single deployment included in the observability addon. To get started, download the adjusted observability-values file from this repo:
+For the scope of just displaying logs, we don't need every single deployment included in the observability addon. To get started, download the adjusted observability-values file from this repo:
 
-``` bash
+```bash
 curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/microk8s/manifests/observability-values.yaml > observability-values.yaml
 ```
 
 As shown in the observability-values file we only deploy grafana with loki as an additional data source for now. In addition we also enable ingress for grafana with the hostname `grafana.local`.
+
 > See the full values file for the kube-prometheus-stack [here](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml)
 
-Next, enable the observability addon with the adjusted bservability-values file:
-``` bash
+Next, enable the observability addon with the adjusted observability-values file:
+
+```bash
 microk8s enable observability --kube-prometheus-stack-values observability-values.yaml --kube-prometheus-stack-version 55.8.1
 ```
 
@@ -26,10 +29,12 @@ your-ubuntu-server-local-ip flyte.local grafana.local
 ```
 
 You should be able to see the Grafana UI visiting the configured hostname `grafana.local`.
-> Feel free to repeat the steps in [05-add-ingress-and-tls](05-add-ingress-and-tls.md) to enable TLS for grafana but it is not needed to follow the rest of this turorial 
+
+> Feel free to repeat the steps in [05-add-ingress-and-tls](05-add-ingress-and-tls.md) to enable TLS for grafana but it is not needed to follow the rest of this tutorial
 
 The last step is about to enable Flyte task logs in the Flyte binary helm chart and to link to the grafana deployment. For this extend the `configuration.logging` object in `edge-values.yaml` like this:
-``` yaml
+
+```yaml
 userSettings:
   hostName: flyte.local
 
@@ -45,11 +50,11 @@ configuration:
   database:
   ...
 ```
-Dont forget to update your Flyte deployment and try executing a workflow! You should be able to see the configured Grafana entry on task level.
+
+Don't forget to update your Flyte deployment and try executing a workflow! You should be able to see the configured Grafana entry on task level.
 
 ![](../../images/microk8s-flyte-task-logs.png)
 
 Finally after clicking the link you should be redirected to your Grafana deployment and see all the logs of your Flyte task. Congratulations!!
 
 ![](../../images/microk8s-grafana-task-logs.png)
-
