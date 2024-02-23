@@ -5,9 +5,9 @@ In order to use SSL (required to use gRPC clients), you must create an SSL certi
 ### Self-signed method (insecure)
 
 In this section, you will generate a self signed cert using `openssl` and obtain the <KEY> and <CRT> file:
-    
+
 11. Create a `req.conf` file with the following contents:
-    
+
 ```bash
 [req]
 distinguished_name = req_distinguished_name
@@ -28,9 +28,11 @@ subjectAltName = @alt_names
 [alt_names]
 DNS.1 = flyte-the-hard-way.uniondemo.run
 ```
+
 **NOTE**: remember to replace both the `CN` and `DNS.1` values with your domain name
-    
+
 12. Use `openssl` to generate the KEY and CRT files:
+
 ```bash
 openssl req -x509 -nodes -days 3649 -newkey rsa:2048 -keyout key.out -out crt.out -config req.conf -extensions 'v3_req'
 ```
@@ -40,6 +42,7 @@ openssl req -x509 -nodes -days 3649 -newkey rsa:2048 -keyout key.out -out crt.ou
 ```bash
 aws acm import-certificate --certificate fileb://crt.out --private-key fileb://key.out --region <REGION>
 ```
+
 Example output:
 
 ```bash
@@ -48,14 +51,17 @@ Example output:
 }
 (END)
 ```
+
 ### Production
-    
-Generate a certificate from the Certification Authority used by your organization and get the <KEY> and <CRT> files. Flyte doesn’t manage the lifecycle of certificates so this requirement will need to be managed by your security or infrastructure team. 
+
+Generate a certificate from the Certification Authority used by your organization and get the <KEY> and <CRT> files. Flyte doesn't manage the lifecycle of certificates so this requirement will need to be managed by your security or infrastructure team.
 
 [Learn how to import external certificates to ACM](https://docs.aws.amazon.com/acm/latest/userguide/import-certificate-prerequisites.html)
 
 If you're using the CA from ACM, [learn here](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html#request-public-console) how to request a new SSL certificate that will be automatically imported.
 
 In any case, note the generated ARN; it will be used in the custom values file for the Helm chart.
-___
+
+---
+
 Next: [Adjust values and upgrade with Helm](08-adjust-values-upgrade-Helm.md)
