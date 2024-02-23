@@ -22,7 +22,7 @@ configuration:
         accessKey: "minio"
         secretKey: "miniostorage"
         disableSSL: "true"
-        secure: "false"  
+        secure: "false"
   inline:
     plugins:
       k8s:
@@ -32,7 +32,7 @@ configuration:
           - FLYTE_AWS_ACCESS_KEY_ID: "minio"
           - FLYTE_AWS_SECRET_ACCESS_KEY: "miniostorage"
     task_resources:
-      defaults: 
+      defaults:
         cpu: 1000m
         memory: 500Mi #change default requested resources and limits to fit your needs
       limits:
