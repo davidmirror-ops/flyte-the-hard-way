@@ -1,4 +1,5 @@
 # Time for Helm
+
 From this point on, you could follow the [Getting started guide](https://docs.flyte.org/en/latest/deployment/deployment/cloud_simple.html) with some considerations:
 
 1. Add the Flyte chart repo to Helm:
@@ -8,9 +9,11 @@ helm repo add flyteorg https://flyteorg.github.io/flyte
 ```
 
 2. Download the `eks-starter` values file:
+
 ```bash
 curl -sL https://raw.githubusercontent.com/flyteorg/flyte/master/charts/flyte-binary/eks-starter.yaml > eks-starter.yaml
 ```
+
 3. Edit the `eks-starter.yaml` file replacing the values obtained during the previous steps in this tutorial
 
 4. If not present, add the `username: flyteadmin` field under the `database` section. Your `eks-starter.yaml` should ressemble the following:
@@ -21,7 +24,7 @@ configuration:
     username: flyteadmin
     password: <database-password>
     host: <RDS-writer-endpoint-name>
-    dbname: flyteadmin  
+    dbname: flyteadmin
   storage:
     metadataContainer: <s3-bucket-for-metadata>
     userDataContainer: <s3-user-data-bucket>
@@ -33,15 +36,15 @@ configuration:
   inline:
     cluster_resources:
       customData:
-      - production:
-        - defaultIamRole:
-            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
-      - staging:
-        - defaultIamRole:
-            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
-      - development:
-        - defaultIamRole:
-            value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
+        - production:
+            - defaultIamRole:
+                value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
+        - staging:
+            - defaultIamRole:
+                value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
+        - development:
+            - defaultIamRole:
+                value: arn:aws:iam::<AWS-ACCOUNT-ID>:role/flyte-workers-role
     task_resources:
       defaults:
         cpu: 500m
@@ -81,11 +84,13 @@ serviceAccount:
 ```
 
 5. Install the Helm chart:
+
 ```bash
 helm install flyte-backend flyteorg/flyte-binary --namespace flyte --values eks-starter.yaml --create-namespace
 ```
 
 6. Example output of the Helm install command:
+
 ```bash
 NAME: flyte-backend
 LAST DEPLOYED: Wed Mar 22 17:46:21 2023
@@ -94,7 +99,9 @@ STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 ```
+
 7. Wait a couple of minutes and check the status of the Flyte Pod (it should be `Running`):
+
 ```bash
 $ kubectl get pods -n flyte
 
@@ -105,6 +112,7 @@ flyte-backend-flyte-binary-... 1/1  Running  0  8s
 ```
 
 8. Verify the IAM annotation is set in the Service Account:
+
 ```bash
 kubectl describe sa flyte-backend-flyte-binary  -n flyte
 
@@ -125,6 +133,7 @@ Events:              <none>
 ```
 
 10. Verify the `insecure:` parameter is set to `true` in your `$HOME/.flyte/config.yaml` file to turn off SSL:
+
 ```yaml
 admin:
   # For GRPC endpoints you might want to use dns:///flyte.myexample.com
@@ -135,7 +144,8 @@ logger:
   show-source: true
   level: 0
 ```
->NOTE: this configuration is used for the `flytectl/pyflyte` tools. The console (UI) connection is not controlled by the settings on this file.
+
+> NOTE: this configuration is used for the `flytectl/pyflyte` tools. The console (UI) connection is not controlled by the settings on this file.
 
 11. Start the port-forward session:
 
@@ -144,20 +154,27 @@ kubectl -n flyte port-forward service/flyte-backend-flyte-binary 8088:8088 8089:
 ```
 
 12. Run your [first workflow](https://docs.flyte.org/en/latest/deployment/deployment/cloud_simple.html#test-workflow)
-____
+
+---
 
 ## Uninstalling Flyte
 
 1. Uninstall the Helm release:
+
 ```bash
 helm uninstall flyte-backend flyteorg/flyte-binary --namespace flyte
 ```
+
 2. Delete the `flyte` namespace:
+
 ```bash
 kubectl delete ns flyte
 ```
-_____
+
+---
+
 > If you experience issues, review the [Troubleshooting guide](https://docs.flyte.org/en/latest/community/troubleshoot.html) or ask help in the [#flyte-deployment](https://flyte-org.slack.com/archives/C01P3B761A6) channel
 
-___
+---
+
 Next: [productionize your deployment with Ingress and SSL](06-intro-to-ingress.md)

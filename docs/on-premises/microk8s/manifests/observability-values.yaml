@@ -6,7 +6,7 @@ grafana:
     enabled: true
     ingressClassName: public
     hosts:
-       - grafana.local
+      - grafana.local
 
     path: /
     ## TLS configuration for grafana Ingress
@@ -18,19 +18,19 @@ grafana:
     #   - grafana.local
 
   additionalDataSources:
-  - name: loki
-    access: proxy
-    basicAuth: false
-    basicAuthPassword: pass
-    basicAuthUser: daco
-    editable: false
-    jsonData:
+    - name: loki
+      access: proxy
+      basicAuth: false
+      basicAuthPassword: pass
+      basicAuthUser: daco
+      editable: false
+      jsonData:
         tlsSkipVerify: true
-    orgId: 1
-    uid: loki
-    type: loki
-    url: http://loki.observability:3100
-    version: 1
+      orgId: 1
+      uid: loki
+      type: loki
+      url: http://loki.observability:3100
+      version: 1
 
 alertmanager:
   enabled: false
