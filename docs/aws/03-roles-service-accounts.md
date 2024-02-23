@@ -1,6 +1,6 @@
 # Configure roles and service accounts
 
-In order to restrict what Flyte components are entitled to do in an AWS environment, this guide leverages the integration between Kubernetes Service Accounts and IAM Roles. In this way, Flyte’s control plane components and data plane Pods (where the actual workflows run) will use Kubernetes service accounts associated with a set of permissions defined in the IAM Role. Any changes in the scope of permissions or policies in the IAM Role, will be inherited by the Kubernetes resources providing centralized control over Authorization:
+In order to restrict what Flyte components are entitled to do in an AWS environment, this guide leverages the integration between Kubernetes Service Accounts and IAM Roles. In this way, Flyte's control plane components and data plane Pods (where the actual workflows run) will use Kubernetes service accounts associated with a set of permissions defined in the IAM Role. Any changes in the scope of permissions or policies in the IAM Role, will be inherited by the Kubernetes resources providing centralized control over Authorization:
 
 ![](../images/flyte-eks-permissions.png)
 
@@ -11,11 +11,14 @@ In order to restrict what Flyte components are entitled to do in an AWS environm
 ```bash
 aws eks describe-cluster --region <region> --name <Name-EKS-Cluster> --query "cluster.identity.oidc.issuer" --output text
 ```
+
 2. Create the OIDC provider that will be associated with the EKS cluster:
+
 ```bash
 eksctl utils associate-iam-oidc-provider --cluster <Name-EKS-Cluster> --approve
 ```
-3. From the AWS Management Console, verify that the OIDC provider has been created by going to **IAM** and then **Identity providers**. There should be a new provider entry has with the same <UUID-OIDC> issuer as the cluster’s.
+
+3. From the AWS Management Console, verify that the OIDC provider has been created by going to **IAM** and then **Identity providers**. There should be a new provider entry has with the same <UUID-OIDC> issuer as the cluster's.
 
 ## Create a user-managed IAM policy
 
@@ -23,25 +26,24 @@ In order to restrict the permissions enabled for Flyte (both the backend and the
 
 1. Create a `flyte-IAM-policy.json` file with the following contents, inserting the name of your S3 bucket where indicated:
 
-
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:DeleteObject*",
-                "s3:GetObject*",
-                "s3:ListBucket",
-                "s3:PutObject*"
-            ],
-            "Resource": [
-                "arn:aws:s3:::<your-S3-bucket>", 
-                "arn:aws:s3:::<your-S3-bucket>/*"
-            ]
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:DeleteObject*",
+        "s3:GetObject*",
+        "s3:ListBucket",
+        "s3:PutObject*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<your-S3-bucket>",
+        "arn:aws:s3:::<your-S3-bucket>/*"
+      ]
+    }
+  ]
 }
 ```
 
@@ -70,9 +72,11 @@ Example output:
 }
 (END)
 ```
+
 3. Take note of the policy ARN.
 
 ## Create IAM Roles
+
 1. Create the `flyte-system-role` IAM role that the backend components will use. You won't create a Kubernetes service account at this point; it will be created by running the Helm chart at the end of the process:
 
 ```bash
@@ -84,32 +88,41 @@ eksctl create iamserviceaccount --cluster=<Name-EKS-Cluster> --name=flyte-backen
 ```bash
 aws iam get-role --role-name flyte-system-role --query Role.AssumeRolePolicyDocument
 ```
+
 Example output:
+
 ```yaml
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "Federated": "arn:aws:iam::<AWS-ACCOUNT>:oidc-provider/oidc.eks.<region-code>.amazonaws.com/id/<UUID-OIDC>"
-            },
-            "Action": "sts:AssumeRoleWithWebIdentity",
-            "Condition": {
-                "StringEquals": {
-                    "oidc.eks.us-east-1.amazonaws.com/id/<UUID-OIDC>:sub": "system:serviceaccount:flyte:flyte-backend-flyte-binary",
-                    "oidc.eks.<region-code>.amazonaws.com/id/<UUID-OIDC>:aud": "sts.amazonaws.com"
-                }
-            }
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement":
+    [
+      {
+        "Effect": "Allow",
+        "Principal":
+          {
+            "Federated": "arn:aws:iam::<AWS-ACCOUNT>:oidc-provider/oidc.eks.<region-code>.amazonaws.com/id/<UUID-OIDC>",
+          },
+        "Action": "sts:AssumeRoleWithWebIdentity",
+        "Condition":
+          {
+            "StringEquals":
+              {
+                "oidc.eks.us-east-1.amazonaws.com/id/<UUID-OIDC>:sub": "system:serviceaccount:flyte:flyte-backend-flyte-binary",
+                "oidc.eks.<region-code>.amazonaws.com/id/<UUID-OIDC>:aud": "sts.amazonaws.com",
+              },
+          },
+      },
+    ],
 }
 ```
+
 3. Create the role that the Task Pods will use to consume AWS resources:
+
 ```bash
 eksctl create iamserviceaccount --cluster=<Name-EKS-Cluster> --name=default --role-only --role-name=flyte-workers-role --attach-policy-arn arn:aws:iam::<AWS-ACCOUNT>:policy/<policy-name> --approve --region <region-code> --namespace flyte
 ```
->NOTE: as this role will be used by the `default` Service Account on each `project-domain` namespace, you'll need to adjust the Role definition to make it work for any namespace:
+
+> NOTE: as this role will be used by the `default` Service Account on each `project-domain` namespace, you'll need to adjust the Role definition to make it work for any namespace:
 
 4. Go to the **AWS Management Console** > **IAM** > **Roles**
 5. Find your `flyte-workers-role` Role and go to the **Trust relationships** view
@@ -118,41 +131,43 @@ eksctl create iamserviceaccount --cluster=<Name-EKS-Cluster> --name=default --ro
 
 ```json
 "Version": "2012-10-17",
-	"Statement": [
-		{
-			"Effect": "Allow",
-			"Principal": {
-				"Federated": "arn:aws:iam::<AWS-ACCOUNT>:oidc-provider/oidc.eks.<AWS-REGION>.amazonaws.com/id/<UUID-OIDC>"
-			},
-			"Action": "sts:AssumeRoleWithWebIdentity",
-			"Condition": {
-				"StringEquals": {
-					"oidc.eks.<AWS-REGION>.amazonaws.com/id/<UUID-OIDC>:aud": "sts.amazonaws.com",
-					"oidc.eks.us-east-1.amazonaws.com/id/<UUID-OIDC>:sub": "system:serviceaccount:flyte:default"
-				}
-			}
-		}
+ "Statement": [
+  {
+   "Effect": "Allow",
+   "Principal": {
+    "Federated": "arn:aws:iam::<AWS-ACCOUNT>:oidc-provider/oidc.eks.<AWS-REGION>.amazonaws.com/id/<UUID-OIDC>"
+   },
+   "Action": "sts:AssumeRoleWithWebIdentity",
+   "Condition": {
+    "StringEquals": {
+     "oidc.eks.<AWS-REGION>.amazonaws.com/id/<UUID-OIDC>:aud": "sts.amazonaws.com",
+     "oidc.eks.us-east-1.amazonaws.com/id/<UUID-OIDC>:sub": "system:serviceaccount:flyte:default"
+    }
+   }
+  }
 ```
 
 8. You'll want to switch from the `StringEquals` condition operator to `StringLike` in order to enable the use of a wildcard in the namespace position:
 
 ```json
 "Version": "2012-10-17",
-	"Statement": [
-		{
-			"Effect": "Allow",
-			"Principal": {
-				"Federated": "arn:aws:iam::<AWS-ACCOUNT>:oidc-provider/oidc.eks.<AWS-REGION>.amazonaws.com/id/66CBAF563FD1438BC98F1EF39FF8DACD"
-			},
-			"Action": "sts:AssumeRoleWithWebIdentity",
-			"Condition": {
-				"StringLike": {
-					"oidc.eks.<AWS-REGION>.amazonaws.com/id/66CBAF563FD1438BC98F1EF39FF8DACD:aud": "sts.amazonaws.com",
-					"oidc.eks.us-east-1.amazonaws.com/id/66CBAF563FD1438BC98F1EF39FF8DACD:sub": "system:serviceaccount:*:default"
-				}
-			}
-```	
+ "Statement": [
+  {
+   "Effect": "Allow",
+   "Principal": {
+    "Federated": "arn:aws:iam::<AWS-ACCOUNT>:oidc-provider/oidc.eks.<AWS-REGION>.amazonaws.com/id/66CBAF563FD1438BC98F1EF39FF8DACD"
+   },
+   "Action": "sts:AssumeRoleWithWebIdentity",
+   "Condition": {
+    "StringLike": {
+     "oidc.eks.<AWS-REGION>.amazonaws.com/id/66CBAF563FD1438BC98F1EF39FF8DACD:aud": "sts.amazonaws.com",
+     "oidc.eks.us-east-1.amazonaws.com/id/66CBAF563FD1438BC98F1EF39FF8DACD:sub": "system:serviceaccount:*:default"
+    }
+   }
+```
 
 9. Save your changes
+
 ---
+
 Next: [Create a relational database](04-create-database.md)
