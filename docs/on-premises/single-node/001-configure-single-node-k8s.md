@@ -3,16 +3,16 @@
 By following this tutorial, you will deploy a Kubernetes cluster on a single VM.   
 Feel free to skip this section if you already have a working Kubernetes environment.
 
-> Do you plan to add more nodes/physical machines to your K8s environment? Then head over to the multi-node guide and start from there. **This guide doesn't currently provide a migration path from single-node to multi-node deployments**.
-
 ## Prerequisites
 
 - A Linux or macOS machine
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/) to interact with the K8s cluster
-- [`multipass`](https://multipass.run/install) to manage VMs.
+- [`multipass`](https://multipass.run/install) if you plan to run K8s on VMs.
 
 ## Configuration process
-> If you plan to run Flyte directly on bare-metal servers, just follow the microk8s [installation instructions](https://microk8s.io/docs/getting-started) and skip to step 3
+> If you plan to run Flyte directly on Linux bare-metal servers, just follow the microk8s [installation instructions](https://microk8s.io/docs/getting-started) and skip to step 4:
+
+
 1. Create the VM where you'll run Kubernetes:
 ``` bash
 multipass launch --name k8smaster --memory 4G --disk 40G
@@ -51,7 +51,11 @@ sudo usermod -a -G microk8s ubuntu
 ``` bash
 cat /var/snap/microk8s/current/credentials/client.config
 ```
-7. On a new terminal tab, open your kubectl config file (typically located at `$HOME/.kube/config`) and the the config for your new K8s instance:
+7. Exit the shell session
+```bash
+exit
+```
+8. On a new terminal tab, open your kubectl config file (typically located at `$HOME/.kube/config`) and the the config for your new K8s instance:
 
 - a. Add a new entry to the `clusters` section including the `certificate-authority-data` and `server`
 - b. Replace the `server` IP with the IP for your machine/VM 
@@ -88,7 +92,7 @@ Example output:
 ```bash
 Switched to context "microk8s".
 ```
-7. Test your connection:
+9. Test your connection:
 ```bash
 kubectl get nodes
 ```

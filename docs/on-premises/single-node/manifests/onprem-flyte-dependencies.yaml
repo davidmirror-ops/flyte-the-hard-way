@@ -73,9 +73,9 @@ spec:
         name: postgres
         env:
         - name: POSTGRES_PASSWORD
-          value: <DB_PASSWORD>
+          value: postgres #Change it to a different value if needed
         - name: POSTGRES_USER
-          value: postgres
+          value: flyte
         - name: POSTGRES_DB
           value: flyte
         ports:

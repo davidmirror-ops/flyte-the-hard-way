@@ -1,6 +1,6 @@
 # Add Ingress and Transport Layer Security (TLS)
 
-To avoid the need to open port-forward sessions and being able to connect to the Flyte instance using a single IP/FQDN, this guide will help you add Ingress networking to your deployment. Also, to create a secure communication tunnel between the client and the Flyte instance, you'll configure TLS.
+To avoid the need to open port-forward sessions to connect to the Flyte instance using a single IP/FQDN, this guide will help you add and [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) resource to your deployment. Also, to create a secure communication tunnel between the client and the Flyte instance, you'll configure TLS.
 
 ## Add Ingress networking
 
@@ -12,6 +12,7 @@ microks enable ingress
 >NOTE: for other distributions, check out the NGINX [installation instructions](https://docs.nginx.com/nginx-ingress-controller/installation/installing-nic/installation-with-helm/)
 
 >This guide uses NGINX as it supports the annotations that Flyte uses. 
+
 2. Verify the status of the NGINX Ingress controller pod:
 ```bash
 kubectl get pod -n ingress 
@@ -21,32 +22,64 @@ Example output:
 NAME                                      READY   STATUS    RESTARTS   AGE
 nginx-ingress-microk8s-controller-6tdpg   1/1     Running   0          50m
 ```
-3. Add the following block to your `local-values.yaml` file:
+
+
+3. Add the following block to values file, depending on the Helm chart you installed:
+
+## Single binary
 ```yaml
 ingress:
  create: true
  ingressClassName: nginx
  httpAnnotations:
-  nginx.ingress.kubernetes.io/app-root: /console
+   nginx.ingress.kubernetes.io/app-root: /console
  grpcAnnotations:
-  nginx.ingress.kubernetes.io/backend-protocol: GRPC
+   nginx.ingress.kubernetes.io/backend-protocol: GRPC
  host: flyteonprem.fthw.local #Replace this with the domain name you plan to use to connect to Flyte
 ```
+## Core
+```yaml
+common:
+  ingress:
+    create: true
+    ingressClassName: nginx
+    httpAnnotations:
+      nginx.ingress.kubernetes.io/app-root: /console
+    grpcAnnotations:
+      nginx.ingress.kubernetes.io/backend-protocol: GRPC
+    host: flyteonprem.fthw.local #Replace this with the domain name you plan to use to connect to Flyte.
+  ```
+
 4. Save your changes.
-5. Upgrade the Helm deployment:
+5. Upgrade the Helm release:
+
+## Single binary
 ```bash
-helm upgrade flyte-binary flyteorg/flyte-binary  --values local-values.yaml -n flyte
+helm upgrade flyte-binary flyteorg/flyte-binary  --values onprem-flyte-binary-values.yaml -n flyte
+```
+
+## Core
+ ```bash
+helm upgrade flyte-core flyteorg/flyte-core  --values onprem-flyte-core-values.yaml -n flyte
 ```
 6. Verify the status of your Ingress resource:
 ```bash
 kubectl get ingress -n flyte
 ```
 Example output:
+
+## Single binary
 ```bash
 NAME                CLASS   HOSTS                    ADDRESS     PORTS   AGE
 flyte-binary-http   nginx   flyteonprem.fthw.local   127.0.0.1   80      168m
 flyte-binary-grpc   nginx   flyteonprem.fthw.local   127.0.0.1   80      168m
 ```
+## Core
+```bash
+NAME                CLASS   HOSTS                    ADDRESS     PORTS   AGE
+flyte-core   nginx   flyteonprem.fthw.local   127.0.0.1   80      168m
+```
+
 7. Create a new A register for your `HOST` in your DNS server pointing to the IP address of your server. In the absence of a DNS server, edit your local file adding a new entry:
 
 - In an OSX environment:
@@ -86,29 +119,38 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ${KEY_FILE} -out ${C
 ``` bash
 kubectl create secret tls ${CERT_NAME} --key ${KEY_FILE} --cert ${CERT_FILE} -n flyte
 ```
-4. Add a `tls` section to the ingress definition in you `local-values.yaml` file:
+4. Add a `tls` section to the ingress definition in you `values` file:
 ```yaml
 ingress:
   tls:
-   - hosts:
-       - "flyteonprem.fthw.local"#replace with your hostname
+    enabled: true
+    - hosts:
+      - "flyteonprem.fthw.local"#replace with your hostname
      secretName: flytetls
-  create: true
-  ingressClassName: nginx
-  httpAnnotations:
-   nginx.ingress.kubernetes.io/app-root: /console
-  grpcAnnotations:
-   nginx.ingress.kubernetes.io/backend-protocol: GRPC
-  host: flyteonprem.fthw.local
+  ...
 ```
 5. Upgrade your Helm release
+## Single binary
 ```bash
-helm upgrade flyte-binary flyteorg/flyte-binary --values local-values.yaml -n flyte
+helm upgrade flyte-binary flyteorg/flyte-binary  --values onprem-flyte-binary-values.yaml -n flyte
 ```
-6. Verify that your Ingress resource now includes TLS:
+
+## Core
+ ```bash
+helm upgrade flyte-core flyteorg/flyte-core  --values onprem-flyte-core-values.yaml -n flyte
+```
+6. Verify that your Ingress configuration now includes TLS:
+
+## Single binary
 ```bash
 kubectl  describe ingress flyte-binary-grpc  -n flyte                
 ```
+
+## Core
+```bash
+kubectl describe ingress flyte-core  -n flyte                
+```
+
 The output should include a line similar to:
 ```yaml
 ...

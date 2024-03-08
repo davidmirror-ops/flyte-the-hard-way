@@ -1,0 +1,244 @@
+userSettings:
+  dbPassword: "postgres" #This is controlled by the POSTGRES_PASSWORD env var defined in manifests/onprem-flyte-resources.yaml
+  dbHost: "postgres.flyte.svc.cluster.local"
+#--- These two storage buckets could be different.
+#--- Learn more https://docs.flyte.org/en/latest/concepts/data_management.html#understand-how-flyte-handles-data  
+  bucketName: "flyte" #This is controlled by the MINIO_DEFAULT_BUCKETS env var defined in manifests/onprem-flyte-resources.yaml
+  rawDataBucketName: "flyte"
+#
+# FLYTEADMIN
+#
+
+flyteadmin:
+  replicaCount: 1
+  serviceAccount:
+    create: true
+  resources:
+    limits:
+      ephemeral-storage: 200Mi
+    requests:
+      cpu: 50m
+      ephemeral-storage: 200Mi
+      memory: 200Mi
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: flyteadmin
+          topologyKey: kubernetes.io/hostname
+
+#
+# FLYTESCHEDULER
+#
+
+flytescheduler: {}
+
+#
+# DATACATALOG
+#
+
+datacatalog:
+  replicaCount: 1
+  serviceAccount:
+    create: true
+  resources:
+    limits:
+      cpu: 1
+      ephemeral-storage: 200Mi
+    requests:
+      cpu: 500m
+      ephemeral-storage: 200Mi
+      memory: 200Mi
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: datacatalog
+          topologyKey: kubernetes.io/hostname
+
+#
+# FLYTEPROPELLER
+#
+
+flytepropeller:
+  replicaCount: 1
+  manager: false
+  service:
+    enabled: false
+  serviceAccount:
+    create: true
+  resources:
+    limits:
+      cpu: 1
+      ephemeral-storage: 1Gi
+      memory: 2Gi
+    requests:
+      cpu: 1
+      ephemeral-storage: 1Gi
+      memory: 2Gi
+  cacheSizeMbs: 1024
+  # -- Sets priorityClassName for propeller pod(s).
+  priorityClassName: "system-cluster-critical"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: flytepropeller
+          topologyKey: kubernetes.io/hostname
+
+#
+# FLYTE_AGENT
+#
+flyteagent:
+  enabled: false
+
+#
+# FLYTECONSOLE
+#
+
+flyteconsole:
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 250m
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: flyteconsole
+          topologyKey: kubernetes.io/hostname
+
+#
+# COMMON
+#
+
+common:
+  databaseSecret:
+    name: db-pass
+    secretManifest:
+      # -- Leave it empty if your secret already exists
+      # Else you can create your own secret object. You can use Kubernetes secrets, else you can configure external secrets
+      # For external secrets please install Necessary dependencies, like, of your choice
+      # - https://github.com/hashicorp/vault
+      # - https://github.com/godaddy/kubernetes-external-secrets
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: db-pass
+      type: Opaque
+      stringData:
+        # -- If using plain text you can provide the password here
+        pass.txt: "{{ .Values.userSettings.dbPassword }}"
+#
+# STORAGE SETTINGS
+#
+
+storage:
+  # -- Sets the storage type. Supported values are sandbox, s3, gcs and custom.
+  type: sandbox #used for environments with minio as S3-compatible storage provider
+  # -- bucketName defines the storage bucket flyte will use. Required for all types except for sandbox.
+  bucketName: "{{ .Values.userSettings.bucketName }}"
+plugins:
+  k8s:
+    inject-finalizer: true
+    default-env-vars:
+      - FLYTE_AWS_ENDPOINT: "http://minio.flyte.svc.cluster.local:9000"
+      - FLYTE_AWS_ACCESS_KEY_ID: "minio"
+      - FLYTE_AWS_SECRET_ACCESS_KEY: "miniostorage" #Use the same value as the MINIO_ROOT_PASSWORD
+
+db:
+  datacatalog:
+    database:
+      port: 5432
+      # -- Create a user called flyte
+      username: flyte
+      host: "{{ .Values.userSettings.dbHost }}"
+      # -- Create a DB called datacatalog (OR change the name here)
+      dbname: flyte
+      passwordPath: /etc/db/pass.txt
+  admin:
+    database:
+      port: 5432
+      # -- Create a user called flyte
+      username: flyte
+      host: "{{ .Values.userSettings.dbHost }}"
+      # -- Create a DB called flyteadmin (OR change the name here)
+      dbname: flyte
+      passwordPath: /etc/db/pass.txt
+#
+# CONFIGMAPS
+#
+
+configmap:
+  adminServer:
+    server:
+      httpPort: 8088
+      grpcPort: 8089
+      security:
+        secure: false
+        useAuth: false
+        allowCors: true
+        allowedOrigins:
+          # Accepting all domains for Sandbox installation
+          - "*"
+        allowedHeaders:
+          - "Content-Type"
+
+  task_resource_defaults:
+    task_resources:
+      defaults:
+        cpu: 1000m
+        memory: 1000Mi
+        storage: 1000Mi
+      limits:
+        storage: 2000Mi
+
+  core:
+    propeller:
+      rawoutput-prefix: "s3://{{ .Values.userSettings.rawDataBucketName }}/"
+      workers: 40
+      gc-interval: 12h
+      max-workflow-retries: 50
+      kube-client-config:
+        qps: 100
+        burst: 25
+        timeout: 30s
+      queue:
+        sub-queue:
+          type: bucket
+          rate: 100
+          capacity: 1000
+
+  # -- Resource manager configuration
+  resource_manager:
+    # -- resource manager configuration
+    propeller:
+      resourcemanager:
+        type: noop
+
+  enabled_plugins:
+    # -- Tasks specific configuration [structure](https://pkg.go.dev/github.com/flyteorg/flytepropeller/pkg/controller/nodes/task/config#GetConfig)
+    tasks:
+      # -- Plugins configuration, [structure](https://pkg.go.dev/github.com/flyteorg/flytepropeller/pkg/controller/nodes/task/config#TaskPluginConfig)
+      task-plugins:
+        # -- [Enabled Plugins](https://pkg.go.dev/github.com/lyft/flyteplugins/go/tasks/config#Config). Enable sagemaker*, athena if you install the backend
+        # plugins
+        enabled-plugins:
+          - container
+          - sidecar
+          - k8s-array
+        default-for-task-types:
+          container: container
+          sidecar: sidecar
+          container_array: k8s-array
+          
+workflow_scheduler:
+  enabled: true
+  type: native
+
+
+
