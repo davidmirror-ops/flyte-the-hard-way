@@ -133,6 +133,7 @@ postgres-6f6bb8bff7-9sjnj       1/1     Running   0          30m
 minio-7d795cd5d8-dlk54          1/1     Running   0          30m
 flyte-binary-58d779b9d8-z2hzs   1/1     Running   0          23s
 ```
+
 Congratulations!     
 You have setup Flyte single binary. Now, learn [how to connect to your Flyte instance](#connecting-to-flyte)
 ## Install Flyte core
