@@ -1,10 +1,9 @@
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
+apiVersion: v1
+kind: Namespace
 metadata:
-  name: local-persistent
-provisioner: rancher.io/local-path
-reclaimPolicy: Retain
-volumeBindingMode: WaitForFirstConsumer
+  name: flyte
+  labels:
+    name: flyte
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -12,7 +11,6 @@ metadata:
   name: postgresql-pvc
   namespace: flyte
 spec:
-  storageClassName: local-persistent
   accessModes:
     - ReadWriteOnce
   resources:
@@ -26,7 +24,6 @@ metadata:
   name: minio-pvc
   namespace: flyte
 spec:
-  storageClassName: local-persistent
   accessModes:
     - ReadWriteOnce
   resources:
@@ -76,11 +73,11 @@ spec:
         name: postgres
         env:
         - name: POSTGRES_PASSWORD
-          value: <DB_PASSWORD>
+          value: postgres #Change it to a different value if needed
         - name: POSTGRES_USER
-          value: postgres
+          value: flyte
         - name: POSTGRES_DB
-          value: flyteadmin
+          value: flyte
         ports:
         - containerPort: 5432
           name: postgres
@@ -127,7 +124,7 @@ spec:
           - name: MINIO_ROOT_PASSWORD
             value: miniostorage
           - name: MINIO_DEFAULT_BUCKETS
-            value: my-s3-bucket
+            value: flyte
         ports:
         - containerPort: 9000
           name: minio
