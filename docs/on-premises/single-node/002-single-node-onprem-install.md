@@ -104,8 +104,8 @@ Data
 ```
 2.  Download the values file:
 ```bash
-curl -sL https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/single-node/manifests/onprem-flyte-binary/values.yaml > onprem-flyte-binary-values.yaml
-
+curl -sL https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/main/docs/on-premises/single-node/manifests/onprem-flyte-binary-values.yaml > onprem-flyte-binary-values.yaml
+```
 
 3. Install Flyte: 
 ```bash
