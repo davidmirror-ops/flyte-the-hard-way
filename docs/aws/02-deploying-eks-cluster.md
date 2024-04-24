@@ -54,8 +54,11 @@ In this step we'll deploy the Kubernetes worker nodes where the actual workloads
 6. For learning purposes, do not use launch templates, labels or taints
 7. Choose the default `Amazon Linux 2 (AL2_x86_x64)` **AMI type**
 8. Use `On-demand` **Capacity type** 
-9. Instance type and size can be chosen based on your devops requirements. Keep the default if in doubt
-10. Kepp all other options by default
+9. Instance type and size can be chosen based on your devops requirements. 
+
+>NOTE: Previous testing suggests that `t3.xlarge` provides the required resources to run the example workflows referenced in this tutorial.
+
+10. Keep all other options by default.
 13. Review the configuration and click **Create**
 
 Learn more about [AWS managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html)

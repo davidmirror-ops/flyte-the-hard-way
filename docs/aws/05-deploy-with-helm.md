@@ -47,8 +47,6 @@ configuration:
         cpu: 500m
         memory: 500Mi
         storage: 500Mi
-      limits:
-        memory: 2Gi
     plugins:
       k8s:
         inject-finalizer: true
