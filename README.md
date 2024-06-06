@@ -73,4 +73,4 @@ In the following tutorials, you'll deploy the `flyte-binary` chart to different 
 - **Single binary** bundles console, admin, data-catalog and propeller services within a single binary that can be deployed to a production K8s environment or to a local test setup such as minikube. It uses a single Helm chart to reduce startup times and simplify deployment.
 - **Core** is the fully fledged deployment with complete control over the configuration of each Flyte component, including production-grade features like federated authentication and Ingress networking.
  
-
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=b14e701f-9af4-4b50-a976-a48f14b320c9" />
