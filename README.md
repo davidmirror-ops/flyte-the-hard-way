@@ -1,5 +1,6 @@
 # Flyte The Hard Way 
-This tutorial walks you through setting up Flyte in a semi-automated way. It includes all the manual steps you need to prepare the infrastructure before adjusting and installing a Helm chart. For a fast non-production setup, try [the Sandbox](https://docs.flyte.org/en/latest/deployment/deployment/sandbox.html).
+This tutorial walks you through setting up Flyte in a semi-automated way. It includes all the manual steps you need to prepare the infrastructure before adjusting and installing a Helm chart.     
+For a fast way to experience Flyte, try [Union Serverless](https://www.union.ai/#:~:text=time%20to%20market.-,Sign%20up,-Request%20demo), a platform managed by Flyte's creators.
 
 > The steps described taken in this tutorial are not the only prescribed way to prepare the infrastructure or deploy Flyte. Feel free to contribute improvements or adapt it to your organization's policies and best practices.        
 
