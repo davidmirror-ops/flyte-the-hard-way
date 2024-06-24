@@ -142,13 +142,7 @@ storage:
   type: sandbox #used for environments with minio as S3-compatible storage provider
   # -- bucketName defines the storage bucket flyte will use. Required for all types except for sandbox.
   bucketName: "{{ .Values.userSettings.bucketName }}"
-plugins:
-  k8s:
-    inject-finalizer: true
-    default-env-vars:
-      - FLYTE_AWS_ENDPOINT: "http://minio.flyte.svc.cluster.local:9000"
-      - FLYTE_AWS_ACCESS_KEY_ID: "minio"
-      - FLYTE_AWS_SECRET_ACCESS_KEY: "miniostorage" #Use the same value as the MINIO_ROOT_PASSWORD
+
 
 db:
   datacatalog:
@@ -187,6 +181,14 @@ configmap:
           - "*"
         allowedHeaders:
           - "Content-Type"
+  k8s:
+    plugins:
+      k8s:
+        inject-finalizer: true
+        default-env-vars:
+          - FLYTE_AWS_ENDPOINT: "http://minio.flyte.svc.cluster.local:9000"
+          - FLYTE_AWS_ACCESS_KEY_ID: "minio"
+          - FLYTE_AWS_SECRET_ACCESS_KEY: "miniostorage"
 
   task_resource_defaults:
     task_resources:
