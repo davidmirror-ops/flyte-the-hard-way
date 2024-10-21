@@ -1,6 +1,6 @@
 configuration:
   database:
-    username: postgres
+    username: flyte
     host: postgres.flyte.svc.cluster.local
     dbname: flyte 
   storage:
