@@ -2,7 +2,7 @@ configuration:
   database:
     username: flyte
     host: postgres.flyte.svc.cluster.local
-    dbname: flyte 
+    dbname: flyte
   storage:
     type: minio
     metadataContainer: flyte #This is the default bucket created with Minio. Controlled by the MINIO_DEFAULT_BUCKETS env var in the local-flyte-resources.yaml manifest
@@ -18,7 +18,7 @@ configuration:
         secure: "false"
         v2Signing: "true"
 
-  inlineSecretRef: flyte-binary-inline-config-secret  
+  inlineSecretRef: flyte-binary-inline-config-secret
   inline:
     plugins:
       k8s:
@@ -29,12 +29,11 @@ configuration:
           - FLYTE_AWS_SECRET_ACCESS_KEY: "miniostorage" #Use the same value as the MINIO_ROOT_PASSWORD
 
     task_resources:
-      defaults: 
+      defaults:
         cpu: 100m
         memory: 500Mi #change default requested resources and limits to fit your needs
       limits:
         memory: 2Gi
-  
-serviceAccount:
-  create: false
 
+serviceAccount:
+  create: true
