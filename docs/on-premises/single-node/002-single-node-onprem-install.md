@@ -25,7 +25,7 @@ curl -sl https://raw.githubusercontent.com/davidmirror-ops/flyte-the-hard-way/ma
 ```
 3. Make sure to adjust sensitive values like `MINIO_ROOT_PASSWORD` and `POSTGRES_PASSWORD` before submitting the manifest:
 ``` bash
-kubectl apply -f local-flyte-resources.yaml
+kubectl apply -f onprem-flyte-dependencies.yaml
 ```
 Example output:
 ```bash
@@ -176,7 +176,7 @@ flytescheduler-579b6cb648-jmmgm      1/1     Running   0            58s
 ## Connecting to Flyte
 
 1. Configure your Flyte config file for local connections (typically located at `$HOME/.flyte/config.yaml`):
-> If you haven't done so, install `flytectl` and run `flytectl config init` so the config file is created. Check out the instructions [here](https://docs.flyte.org/en/latest/flytectl_overview.html#installation)
+> If you haven't done so, install `flytectl` and run `flytectl config init` so the config file is created. Check out the instructions [here](https://docs.flyte.org/en/latest/user_guide/getting_started_with_workflow_development/installing_development_tools.html)
 
 ```yaml
 admin:
