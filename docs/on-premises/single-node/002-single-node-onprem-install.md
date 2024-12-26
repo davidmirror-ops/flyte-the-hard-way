@@ -203,12 +203,17 @@ sudo vi /etc/hosts
 ##
 127.0.0.1       minio.flyte.svc.cluster.local 
 ```
-3. In three different terminal windows, start three port-forwarding sessions. As each Helm chart uses different Services and ports, the commands are different:
+3. In four different terminal windows, start three port-forwarding sessions. As each Helm chart uses different Services and ports, the commands are different:
 
 ### Single binary
 ```bash
 kubectl -n flyte port-forward service/minio 9000:9000
 ```
+```bash
+ kubectl -n flyte port-forward service/minio 9001:9001
+```
+
+This is because minio redirects all the requests on port 9000 to port 9001.
 ```bash
 kubectl -n flyte port-forward service/flyte-binary-grpc 8089:8089
 ```
