@@ -168,6 +168,9 @@ db:
 #
 
 configmap:
+  configmap:
+    console:
+      ADMIN_API_URL: http://localhost:8089
   adminServer:
     server:
       httpPort: 8088
@@ -177,8 +180,8 @@ configmap:
         useAuth: false
         allowCors: true
         allowedOrigins:
-          # Accepting all domains for Sandbox installation
-          - "*"
+          # Accepting localhost domains for Sandbox installation to avoid CORS issues
+          - "http://localhost:8088"
         allowedHeaders:
           - "Content-Type"
   k8s:
