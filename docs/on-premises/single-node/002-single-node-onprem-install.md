@@ -184,6 +184,8 @@ admin:
   endpoint: localhost:8089
   authType: Pkce
   insecure: true
+console:
+  endpoint: localhost:8088
 logger:
   show-source: true
   level: 6
