@@ -230,17 +230,29 @@ kubectl -n flyte port-forward service/flyteconsole 8088:80
 ## Using Flyte
 
 4. Save the following "hello world" workflow definition:
+Check that the onprem-flyte-binary-values.yaml has these values as it will result in a 10x faster execution for this simple example.
+
+    task_resources:
+      defaults:
+        cpu: 1000m
+        memory: 2Gi #change default requested resources and limits to fit your needs
+      limits:
+        cpu: 3000m
+        memory: 4Gi
 
 ```bash
 cat <<<EOF >hello_world.py
-from flytekit import task, workflow
-@task
+from flytekit import Resources, task, workflow
+
+@task(requests=Resources(cpu="900m", mem="3Gi"))
 def say_hello() -> str:
     return "hello world"
+
 @workflow
 def my_wf() -> str:
     res = say_hello()
     return res
+
 if __name__ == "__main__":
     print(f"Running my_wf() {my_wf()}")
 EOF
