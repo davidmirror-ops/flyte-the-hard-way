@@ -128,7 +128,7 @@ eksctl create iamserviceaccount --cluster=<Name-EKS-Cluster> --name=default --ro
 			"Condition": {
 				"StringEquals": {
 					"oidc.eks.<AWS-REGION>.amazonaws.com/id/<UUID-OIDC>:aud": "sts.amazonaws.com",
-					"oidc.eks.us-east-1.amazonaws.com/id/<UUID-OIDC>:sub": "system:serviceaccount:flyte:default"
+					"oidc.eks.<AWS-REGION>.amazonaws.com/id/<UUID-OIDC>:sub": "system:serviceaccount:flyte:default"
 				}
 			}
 		}
@@ -142,13 +142,13 @@ eksctl create iamserviceaccount --cluster=<Name-EKS-Cluster> --name=default --ro
 		{
 			"Effect": "Allow",
 			"Principal": {
-				"Federated": "arn:aws:iam::<AWS-ACCOUNT>:oidc-provider/oidc.eks.<AWS-REGION>.amazonaws.com/id/66CBAF563FD1438BC98F1EF39FF8DACD"
+				"Federated": "arn:aws:iam::<AWS-ACCOUNT>:oidc-provider/oidc.eks.<AWS-REGION>.amazonaws.com/id/<UUID-OIDC>"
 			},
 			"Action": "sts:AssumeRoleWithWebIdentity",
 			"Condition": {
 				"StringLike": {
-					"oidc.eks.<AWS-REGION>.amazonaws.com/id/66CBAF563FD1438BC98F1EF39FF8DACD:aud": "sts.amazonaws.com",
-					"oidc.eks.us-east-1.amazonaws.com/id/66CBAF563FD1438BC98F1EF39FF8DACD:sub": "system:serviceaccount:*:default"
+					"oidc.eks.<AWS-REGION>.amazonaws.com/id/<UUID-OIDC>:aud": "sts.amazonaws.com",
+					"oidc.eks.<AWS-REGION>.amazonaws.com/id/<UUID-OIDC>:sub": "system:serviceaccount:*:default"
 				}
 			}
 ```	
