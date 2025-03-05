@@ -34,5 +34,24 @@ Give the role an informative name and hit Create role
 [Learn more about node roles](https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html)
 
 ---
+
+## CDK
+
+The cluster role is created in the `eks.Cluster` construct.
+The node role is created as
+
+```ts
+const eksClusterNodeGroupRole = new Role(this, 'eksClusterNodeGroupRole', {
+  assumedBy: new ServicePrincipal('ec2.amazonaws.com'),
+  managedPolicies: [
+    ManagedPolicy.fromAwsManagedPolicyName('AmazonEKSWorkerNodePolicy'),
+    ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryReadOnly'),
+    ManagedPolicy.fromAwsManagedPolicyName('AmazonEKS_CNI_Policy'),
+    // any other policies you want to add
+  ],
+});
+```
+
+---
 Next: [Deploy an EKS cluster](02-deploying-eks-cluster.md)
 
