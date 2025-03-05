@@ -124,6 +124,25 @@ Example output:
     ]
 }
 ```
+
+Or, the above using EKS:
+
+```diff
+this.cluster = new Cluster(this, 'flyte-eks-cluster', {
++  // if you do not specify a VPC or control plane security group, they will be created on your behalf with the correct tags
+  defaultCapacity: 0, // start with 0 capacity
+  version: kubernetesVersion,
+  kubectlLayer: kubectlLayer, // Lambda function responsible to issuing kubectl and helm commands against the cluster
+  ipFamily: IpFamily.IP_V4,
+  endpointAccess: EndpointAccess.PUBLIC_AND_PRIVATE,
++ albController: {
++   version: AlbControllerVersion.V2_8_2,
++ },
+});
+
+```
+
+
 6. Verify the service account is annotated with the IAM role ARN:
 
 ```bash
