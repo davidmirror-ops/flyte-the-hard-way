@@ -63,7 +63,41 @@ In this step we'll deploy the Kubernetes worker nodes where the actual workloads
 
 Learn more about [AWS managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html)
 
+Within a CDK stack:
+
+```ts
+const eksClusterNodeGroupRole = new Role(this, 'eksClusterNodeGroupRole', {
+  assumedBy: new ServicePrincipal('ec2.amazonaws.com'),
+  managedPolicies: [
+    ManagedPolicy.fromAwsManagedPolicyName('AmazonEKSWorkerNodePolicy'),
+    ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryReadOnly'),
+    ManagedPolicy.fromAwsManagedPolicyName('AmazonEKS_CNI_Policy'),
+  ],
+});
+
+const kubernetesVersion = KubernetesVersion.V1_31;
+const kubectlLayer = new KubectlV31Layer(this, 'kubectl');
+this.cluster = new Cluster(this, 'flyte-eks-cluster', {
+  // if you do not specify a VPC or control plane security group, they will be created on your behalf with the correct tags
+  defaultCapacity: 0, // start with 0 capacity
+  version: kubernetesVersion,
+  kubectlLayer: kubectlLayer, // Lambda function responsible to issuing kubectl and helm commands against the cluster
+  ipFamily: IpFamily.IP_V4,
+  endpointAccess: EndpointAccess.PUBLIC_AND_PRIVATE,
+});
+
+this.cluster.addNodegroupCapacity('custom-node-group', {
+  nodegroupName: 'default-managed',
+  minSize: 2,
+  amiType: NodegroupAmiType.AL2_X86_64,
+  instanceTypes: [new InstanceType('t3.xlarge')],
+  nodeRole: eksClusterNodeGroupRole,
+  capacityType: CapacityType.ON_DEMAND,
+});
+```
+
 ## Connecting to the EKS cluster
+
 Now, you have to “let your terminal know” where’s the Kubernetes cluster you’re trying to connect to.
 
 Use your AWS account access keys to run the following commands, updating the `kubectl` config and switching to the new EKS cluster context:
@@ -90,6 +124,7 @@ arn:aws:eks:<region>:<AWS_ACCOUNT_ID>:cluster/<Name-EKS-Cluster>
 $ kubectl get pods
 No resources found in default namespace.
 ```
+
 ## Create an S3 bucket
 
 This is the blob storage resource that will be used by FlytePropeller and DataCatalog to store metadata for versioning and other use cases.
@@ -98,5 +133,15 @@ This is the blob storage resource that will be used by FlytePropeller and DataCa
 19. Create a bucket leaving **Block all public access** enabled
 20. Choose the same region and VPC as your EKS cluster
 21. Take note of the name as it will be used in your Helm `values` file
+
+```ts
+const dataBucket = new Bucket(this, 'DataBucket', {
+  blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+  versioned: true,
+  encryption: BucketEncryption.S3_MANAGED,
+  enforceSSL: true,
+});
+```
+
 ---
 Next: [Configure roles and service accounts](03-roles-service-accounts.md)
