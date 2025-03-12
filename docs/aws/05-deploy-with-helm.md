@@ -132,7 +132,37 @@ const flyteChart = cluster.addHelmChart('Flyte', {
         },
       },
       inline: {
-        // cluster_resources: currently omitted
+        cluster_resources: {
+          customData: [
+            {
+              production: [
+                {
+                  defaultIamRole: {
+                    value: flyteWorkersRole.roleArn,
+                  },
+                },
+              ],
+            },
+            {
+              staging: [
+                {
+                  defaultIamRole: {
+                    value: flyteWorkersRole.roleArn,
+                  },
+                },
+              ],
+            },
+            {
+              development: [
+                {
+                  defaultIamRole: {
+                    value: flyteWorkersRole.roleArn,
+                  },
+                },
+              ],
+            },
+          ],
+        },
         plugins: {
           k8s: {
             'inject-finalizer': true,
@@ -172,11 +202,10 @@ metadata:
       create: true,
     },
     serviceAccount: {
-      create: true, // currently, create not set as enable
-      // annotations currently omitted
-      // annotations: {
-      //  'eks.amazonaws.com/role-arn': <XXXXXServiceAccountManifest>.role.roleArn,
-      // }
+      create: 'enable',
+      annotations: {
+        'eks.amazonaws.com/role-arn': flyteSystemRole.roleArn,
+      },
     },
   },
 });
