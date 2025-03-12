@@ -155,43 +155,62 @@ eksctl create iamserviceaccount --cluster=<Name-EKS-Cluster> --name=default --ro
 
 9. Save your changes
 ---
-Next: [Create a relational database](04-create-database.md)
 
-## Draft CDK
+## CDK
 
-CDK to create a service account with access to AWS resources.
-This service account below operates on `kube-system` namespace.
-The method [creates a new role](https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/lib/service-account.ts#L194) with an [OIDC Principal](https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/lib/service-account.ts#L177)
+The key to writing the above steps in CDK is to create the IAM role _without_ creating the Kubernetes service account.
+The service account will be created by the Helm chart.
+The snippets below are adapted from the CDK [code](https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/lib/service-account.ts#L166-L179) for `eks.ServiceAccount` (usually invoked by `cluster.addServiceAccount`), but we are ignoring the section with `KubernetesManifest` construct which creates a service account.
 
-Currently, I let flyte create the service account for `flyte-binary`.
+Firstly, create the user-managed IAM policy with reference to the S3 bucket created in previous step.
 
 ```ts
-// provide Kubernetes Pods access to AWS resources
-// kubectlRoleArn https://github.com/aws/aws-cdk/tree/main/packages/aws-cdk-lib/aws-eks#service-accounts
-const serviceAccountManifest = cluster.addServiceAccount('eks-admin-service-account', {
-  name: 'eks-admin',
-  namespace: 'kube-system',
-});
-
-const clusterRoleBindingManifest = cluster.addManifest('eks-admin-cluster-role-binding', {
-  apiVersion: 'rbac.authorization.k8s.io/v1', // native Kubernetes Role Based Access Control (RBAC)
-  kind: 'ClusterRoleBinding',
-  metadata: {
-    name: 'eks-admin',
-  },
-  roleRef: {
-    apiGroup: 'rbac.authorization.k8s.io',
-    kind: 'ClusterRole',
-    name: 'cluster-admin',
-  },
-  subjects: [
-  {
-    kind: 'ServiceAccount',
-    name: 'eks-admin',
-    namespace: 'kube-system',
-  },
+const flytePolicy = new Policy(this, 'FlyteCustomPolicy', {
+  statements: [
+    new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: ['s3:DeleteObject*', 's3:GetObject*', 's3:ListBucket', 's3:PutObject*'],
+      resources: [bucket.bucketArn, `${bucket.bucketArn}/*`],
+    }),
   ],
 });
-
-clusterRoleBindingManifest.node.addDependency(serviceAccountManifest);
 ```
+
+Then create the [new IAM role](https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/lib/service-account.ts#L194) with an [OIDC Principal](https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/lib/service-account.ts#L177) that the backend components will use.
+
+```ts
+const flyteNamespaceName = 'flyte';
+const flyteServiceAccountName = 'flyte-backend-flyte-binary';
+const flyteSystemRole = new Role(this, 'FlyteSystemRole', {
+  assumedBy: new OpenIdConnectPrincipal(cluster.openIdConnectProvider).withConditions({
+    StringEquals: new CfnJson(this, 'FlyteSystemRoleConditionJson', {
+      value: {
+        [`${cluster.openIdConnectProvider.openIdConnectProviderIssuer}:aud`]: 'sts.amazonaws.com',
+        [`${cluster.openIdConnectProvider.openIdConnectProviderIssuer}:sub`]: `system:serviceaccount:${flyteNamespaceName}:${flyteServiceAccountName}`,
+      },
+    }),
+  }),
+});
+flyteSystemRole.attachInlinePolicy(flytePolicy);
+```
+
+And then create the IAM role that can be assumed by any service account in any namespace.
+
+```ts
+const flyteWorkersRole = new Role(this, 'FlyteWorkersRole', {
+  assumedBy: new OpenIdConnectPrincipal(cluster.openIdConnectProvider).withConditions({
+    // note StringLike instead of StringEquals
+    StringLike: new CfnJson(this, 'FlyteWorkersRoleConditionJson', {
+      value: {
+        [`${cluster.openIdConnectProvider.openIdConnectProviderIssuer}:aud`]: 'sts.amazonaws.com',
+        [`${cluster.openIdConnectProvider.openIdConnectProviderIssuer}:sub`]: `system:serviceaccount:*:default`,
+      },
+    }),
+  }),
+});
+flyteWorkersRole.attachInlinePolicy(flytePolicy);
+```
+
+---
+
+Next: [Create a relational database](04-create-database.md)
