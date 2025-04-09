@@ -35,7 +35,7 @@ kubectl create ns testdb
 ```
 17. Run the following command with the database username and password you configured, and the **Endpoint name**:
 ```bash
-kubectl run pgsql-postgresql-client --rm --tty -i --restart='Never' --namespace testdb --image docker.io/bitnami/postgresql:11.7.0-debian-10-r9 --env='PGPASSWORD=<Password>' --command -- psql testdb --host <RDS-ENDPOINT-NAME> -U flyteadmin -d flyteadmin -p 5432
+kubectl run pgsql-postgresql-client --rm --tty -i --restart='Never' --namespace testdb --image docker.io/bitnami/postgresql:11.7.0-debian-10-r9 --env='PGPASSWORD=<Password>' --command -- psql --host <RDS-ENDPOINT-NAME> -U flyteadmin -d flyteadmin -p 5432
 ```
 18. If things are working fine then you should drop into a `psql` command prompt after hitting Enter
 19. Verify connection by entering:
