@@ -155,4 +155,62 @@ eksctl create iamserviceaccount --cluster=<Name-EKS-Cluster> --name=default --ro
 
 9. Save your changes
 ---
+
+## CDK
+
+The key to writing the above steps in CDK is to create the IAM role _without_ creating the Kubernetes service account.
+The service account will be created by the Helm chart.
+The snippets below are adapted from the CDK [code](https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/lib/service-account.ts#L166-L179) for `eks.ServiceAccount` (usually invoked by `cluster.addServiceAccount`), but we are ignoring the section with `KubernetesManifest` construct which creates a service account.
+
+Firstly, create the user-managed IAM policy with reference to the S3 bucket created in previous step.
+
+```ts
+const flytePolicy = new Policy(this, 'FlyteCustomPolicy', {
+  statements: [
+    new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: ['s3:DeleteObject*', 's3:GetObject*', 's3:ListBucket', 's3:PutObject*'],
+      resources: [bucket.bucketArn, `${bucket.bucketArn}/*`],
+    }),
+  ],
+});
+```
+
+Then create the [new IAM role](https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/lib/service-account.ts#L194) with an [OIDC Principal](https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/lib/service-account.ts#L177) that the backend components will use.
+
+```ts
+const flyteNamespaceName = 'flyte';
+const flyteServiceAccountName = 'flyte-backend-flyte-binary';
+const flyteSystemRole = new Role(this, 'FlyteSystemRole', {
+  assumedBy: new OpenIdConnectPrincipal(cluster.openIdConnectProvider).withConditions({
+    StringEquals: new CfnJson(this, 'FlyteSystemRoleConditionJson', {
+      value: {
+        [`${cluster.openIdConnectProvider.openIdConnectProviderIssuer}:aud`]: 'sts.amazonaws.com',
+        [`${cluster.openIdConnectProvider.openIdConnectProviderIssuer}:sub`]: `system:serviceaccount:${flyteNamespaceName}:${flyteServiceAccountName}`,
+      },
+    }),
+  }),
+});
+flyteSystemRole.attachInlinePolicy(flytePolicy);
+```
+
+And then create the IAM role that can be assumed by any service account in any namespace.
+
+```ts
+const flyteWorkersRole = new Role(this, 'FlyteWorkersRole', {
+  assumedBy: new OpenIdConnectPrincipal(cluster.openIdConnectProvider).withConditions({
+    // note StringLike instead of StringEquals
+    StringLike: new CfnJson(this, 'FlyteWorkersRoleConditionJson', {
+      value: {
+        [`${cluster.openIdConnectProvider.openIdConnectProviderIssuer}:aud`]: 'sts.amazonaws.com',
+        [`${cluster.openIdConnectProvider.openIdConnectProviderIssuer}:sub`]: `system:serviceaccount:*:default`,
+      },
+    }),
+  }),
+});
+flyteWorkersRole.attachInlinePolicy(flytePolicy);
+```
+
+---
+
 Next: [Create a relational database](04-create-database.md)

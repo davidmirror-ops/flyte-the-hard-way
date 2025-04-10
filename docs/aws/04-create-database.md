@@ -22,6 +22,38 @@ In this section, you will create the database used by both the primary control p
 12. Under the top level **Additional configuration** (there’s a sub menu by the same name) set `flyteadmin` as **Initial database name**
 13. Leave all the other settings as is and hit **Create**.
 
+```ts
+const auroraSecurityGroup = new SecurityGroup(this, 'AuroraSecurityGroup', {
+  vpc,
+  allowAllOutbound: true,
+});
+
+auroraSecurityGroup.addIngressRule(
+  SecurityGroup.fromSecurityGroupId(this, 'EksSecurityGroup', cluster.clusterSecurityGroupId),
+  Port.tcp(5432),
+  'Allow inbound traffic from EKS cluster to Aurora',
+);
+
+const database = new DatabaseCluster(this, 'FlyteDatabase', {
+  engine: DatabaseClusterEngine.auroraPostgres({
+    version: AuroraPostgresEngineVersion.VER_14_10, // Choose appropriate version
+  }),
+  vpc: vpc,
+  vpcSubnets: {
+    subnetType: SubnetType.PRIVATE_WITH_EGRESS,
+  },
+  securityGroups: [auroraSecurityGroup],
+  writer: ClusterInstance.provisioned('writer', {
+    instanceType: InstanceType.of(InstanceClass.T3, InstanceSize.MEDIUM),
+  }),
+  credentials: Credentials.fromGeneratedSecret('flyteadmin'), // Username will be 'flyteadmin'
+  clusterIdentifier: 'flyteadmin',
+  defaultDatabaseName: 'flyteadmin',
+  deletionProtection: true,
+  iamAuthentication: true,
+});
+```
+
 ## Check connectivity to the RDS database from the EKS cluster
 
 14. Oncre created, go to **RDS** > **Databases** and click on your database

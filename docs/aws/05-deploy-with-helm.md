@@ -92,6 +92,126 @@ STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 ```
+
+The steps above can be deployed in CDK:
+
+```ts
+this.cluster.addManifest('flyte-namespace', {
+  apiVersion: 'v1',
+  kind: 'Namespace',
+  metadata: {
+    name: 'flyte',
+  },
+});
+
+const flyteChart = cluster.addHelmChart('Flyte', {
+  repository: 'https://flyteorg.github.io/flyte/',
+  chart: 'flyte-binary',
+  release: 'flyte-backend',
+  version: '1.15.0',
+  namespace: 'flyte',
+  wait: true,
+  timeout: Duration.minutes(15),
+  values: {
+    configuration: {
+      database: {
+        username: 'flyteadmin',
+        password: <database-password>,
+        host: database.clusterEndpoint.hostname,
+        dbname: 'flyteadmin',
+      },
+      storage: {
+        metadataContainer: bucket.bucketName,
+        userDataContainer: bucket.bucketName,
+        provider: 's3',
+        providerConfig: {
+          s3: {
+            region: this.cluster.env.region,
+            authType: 'iam',
+          },
+        },
+      },
+      inline: {
+        cluster_resources: {
+          customData: [
+            {
+              production: [
+                {
+                  defaultIamRole: {
+                    value: flyteWorkersRole.roleArn,
+                  },
+                },
+              ],
+            },
+            {
+              staging: [
+                {
+                  defaultIamRole: {
+                    value: flyteWorkersRole.roleArn,
+                  },
+                },
+              ],
+            },
+            {
+              development: [
+                {
+                  defaultIamRole: {
+                    value: flyteWorkersRole.roleArn,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        plugins: {
+          k8s: {
+            'inject-finalizer': true,
+            'default-env-vars': [{ AWS_METADATA_SERVICE_TIMEOUT: 5 }, { AWS_METADATA_SERVICE_NUM_ATTEMPTS: 20 }],
+          },
+        },
+        storage: {
+          cache: {
+            max_size_mbs: 100,
+            target_gc_percent: 100,
+          },
+        },
+        tasks: {
+          'task-plugins': {
+            'enabled-plugins': ['container', 'sidecar', 'K8S-ARRAY', 'agent-service', 'echo'],
+            'default-for-task-types': [{ container: 'container' }, { container_array: 'K8S-ARRAY' }],
+          },
+        },
+      },
+    },
+    clusterResourceTemplates: {
+      inline: {
+        '001_namespace.yaml': `apiVersion: v1
+kind: Namespace
+metadata:
+  name: '{{ namespace }}'`,
+        '002_serviceaccount.yaml': `apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: '{{ namespace }}'
+  annotations:
+    eks.amazonaws.com/role-arn: '{{ defaultIamRole }}'`,
+      },
+    },
+    ingress: {
+      create: true,
+    },
+    serviceAccount: {
+      create: 'enable',
+      annotations: {
+        'eks.amazonaws.com/role-arn': flyteSystemRole.roleArn,
+      },
+    },
+  },
+});
+```
+
+
 7. Wait a couple of minutes and check the status of the Flyte Pod (it should be `Running`):
 ```bash
 $ kubectl get pods -n flyte
